@@ -48,13 +48,11 @@ button:hover {
   background:#1b2838;
 }
 
-.clear-btn {
-  background:#e53935;
-}
+.clear-btn { background:#e53935; }
+.clear-btn:hover { background:#c62828; }
 
-.clear-btn:hover {
-  background:#c62828;
-}
+.back-btn { background:#555; }
+.back-btn:hover { background:#333; }
 
 table {
   margin:30px auto;
@@ -73,13 +71,9 @@ th {
   color:white;
 }
 
-.back {
-  margin:20px;
-  padding:10px 20px;
-  background:#555;
-  color:white;
-  border-radius:8px;
-  cursor:pointer;
+.total-row {
+  background:#e8f5e9;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -90,8 +84,10 @@ th {
 
 <div class="search-box">
   <input type="text" id="orderId" placeholder="Enter Order ID">
+  <br>
   <button onclick="searchOrder()">Search</button>
   <button class="clear-btn" onclick="clearTable()">Clear</button>
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
 </div>
 
 <table>
@@ -108,8 +104,6 @@ th {
 <tr><td colspan="4">Enter Order ID to search</td></tr>
 </tbody>
 </table>
-
-<div class="back" onclick="goBack()">⬅ Back</div>
 
 <script>
 
@@ -132,12 +126,16 @@ function searchOrder(){
   .then(data => {
 
     let html = "";
+    let totalQty = 0;
 
     if(!data || data.length === 0){
       html = "<tr><td colspan='4'>No Data Found ❌</td></tr>";
     } else {
 
       data.forEach(item => {
+
+        totalQty += Number(item.qty) || 0;
+
         html += `<tr>
           <td>${item.order_id}</td>
           <td>${item.sku}</td>
@@ -146,6 +144,11 @@ function searchOrder(){
         </tr>`;
       });
 
+      // ✅ TOTAL ROW
+      html += `<tr class="total-row">
+        <td colspan="3">Total Qty</td>
+        <td>${totalQty}</td>
+      </tr>`;
     }
 
     tableData.innerHTML = html;
@@ -157,14 +160,14 @@ function searchOrder(){
 
 }
 
-/* CLEAR TABLE */
+/* CLEAR */
 function clearTable(){
-  document.getElementById("orderId").value="";
+  orderId.value="";
   tableData.innerHTML = "<tr><td colspan='4'>Enter Order ID to search</td></tr>";
 }
 
-/* ENTER KEY */
-document.getElementById("orderId").addEventListener("keypress", function(e){
+/* ENTER */
+orderId.addEventListener("keypress", function(e){
   if(e.key === "Enter"){
     searchOrder();
   }
