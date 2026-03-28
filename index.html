@@ -7,101 +7,125 @@
 
 <style>
 body {
-  font-family: 'Segoe UI', Arial;
-  margin: 0;
-  background: #f4f6fb;
-  text-align: center;
+  font-family:'Segoe UI', Arial;
+  margin:0;
+  background:#f4f6fb;
+  text-align:center;
+  transition:0.3s;
 }
 
+.dark {
+  background:#0f172a;
+  color:#fff;
+}
+
+/* HEADER */
 .header {
-  background: #2d3e50;
-  color: #fff;
-  height: 70px; /* FIX HEIGHT */
-  display: flex;
-  align-items: center;
-  justify-content: center; /* text center */
-  position: relative;
+  background:#2d3e50;
+  color:#fff;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
 }
 
-/* TEXT CENTER FIX */
-.header span {
-  font-size: 26px;
-  font-weight: bold;
-}
-
-/* LOGO LEFT FIX */
 .logo {
-  position: absolute;
-  left: 20px;   /* bilkul left */
-  width: 120px; /* bada size */
-  height: auto;
+  position:absolute;
+  left:20px;
+  width:120px;
+  cursor:pointer;
+}
+
+.header span {
+  font-size:26px;
+  font-weight:bold;
+}
+
+/* TOTAL */
+.total-box {
+  margin-top:15px;
+  font-size:20px;
+  font-weight:bold;
 }
 
 /* GRID */
 .dashboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  padding: 30px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:25px;
+  padding:30px;
 }
 
 /* CARD */
 .card {
-  width: 250px;
-  min-height: 250px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  padding: 15px;
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  width:250px;
+  min-height:250px;
+  background:#fff;
+  border-radius:15px;
+  padding:15px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.dark .card {
+  background:#1e293b;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  background: #eef3ff;
-}
-
-.card h3 {
-  margin: 0;
-  font-size: 18px;
+  transform:translateY(-5px);
 }
 
 /* STATS */
-.stats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.stat {
+  background:#f1f3f9;
+  padding:10px;
+  border-radius:8px;
+  margin:6px 0;
 }
 
-.stat {
-  background: #f1f3f9;
-  padding: 10px;
-  border-radius: 8px;
+.dark .stat {
+  background:#334155;
 }
 
 .stat span {
-  display: block;
-  font-weight: bold;
-  font-size: 18px;
+  font-weight:bold;
+  font-size:18px;
 }
 
-.today { border-left: 5px solid #4CAF50; }
-.yesterday { border-left: 5px solid #FF9800; }
-.total { border-left: 5px solid #2196F3; }
-
-/* SETTING */
+/* SETTINGS */
 .setting-btn {
-  background: #2d3e50;
-  color: white;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 8px;
-  cursor: pointer;
+  background:#2d3e50;
+  color:#fff;
+  padding:10px;
+  margin:5px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* POPUP */
+.popup {
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
+}
+
+.dark .popup {
+  background:#1e293b;
+}
+
+/* CALCULATOR */
+.calc input {
+  width:200px;
+  padding:10px;
+  margin:5px;
 }
 </style>
 </head>
@@ -109,123 +133,142 @@ body {
 <body>
 
 <div class="header">
-  <img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo" onclick="location.reload()" style="cursor:pointer;">
+  <img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo" onclick="location.reload()">
   <span>Harsidhi Ventures</span>
+</div>
+
+<div class="total-box">
+  Total Orders: <span id="totalOrders">0</span>
 </div>
 
 <div class="dashboard">
 
-  <!-- PICKUP -->
-  <div class="card" onclick="openPage('pickup.html')">
-    <h3>Pickup</h3>
-    <div class="stats">
-      <div class="stat today">Today <span id="pickup_today">0</span></div>
-      <div class="stat yesterday">Yesterday <span id="pickup_yesterday">0</span></div>
-      <div class="stat total">Total <span id="pickup_total">0</span></div>
-    </div>
-  </div>
+<!-- PICKUP -->
+<div class="card" onclick="openPage('pickup.html')">
+<h3>Pickup</h3>
+<div class="stat">Today <span id="pickup_today">0</span></div>
+<div class="stat">Total <span id="pickup_total">0</span></div>
+</div>
 
-  <!-- RETURN -->
-  <div class="card" onclick="openPage('return.html')">
-    <h3>Return</h3>
-    <div class="stats">
-      <div class="stat today">Today <span id="return_today">0</span></div>
-      <div class="stat yesterday">Yesterday <span id="return_yesterday">0</span></div>
-      <div class="stat total">Total <span id="return_total">0</span></div>
-    </div>
-  </div>
+<!-- RETURN -->
+<div class="card" onclick="openPage('return.html')">
+<h3>Return</h3>
+<div class="stat">Today <span id="return_today">0</span></div>
+<div class="stat">Total <span id="return_total">0</span></div>
+</div>
 
-  <!-- ✅ LOOKUP (NOW 3rd) -->
-  <div class="card" onclick="openPage('lookup.html')">
-    <h3>Lookup Orders</h3>
-    <div class="stats">
-      <div class="stat total">Order<span>Search</span></div>
-    </div>
-  </div>
+<!-- LOOKUP -->
+<div class="card" onclick="openPage('lookup.html')">
+<h3>Search</h3>
+<div class="stat">Orders <span id="lookup_total">0</span></div>
+</div>
 
-  <!-- RETURN REQUEST -->
-  <div class="card" onclick="openPage('return-request.html')">
-    <h3>Return Request</h3>
-    <div class="stats">
-      <div class="stat today">Today <span>0</span></div>
-      <div class="stat yesterday">Yesterday <span>0</span></div>
-      <div class="stat total">Total <span>0</span></div>
-    </div>
-  </div>
+<!-- SETTINGS -->
+<div class="card">
+<h3>Settings</h3>
 
-  <!-- CUSTOMER -->
-  <div class="card" onclick="openPage('customer.html')">
-    <h3>Customer</h3>
-    <div class="stats">
-      <div class="stat today">Today <span>0</span></div>
-      <div class="stat yesterday">Yesterday <span>0</span></div>
-      <div class="stat total">Total <span>0</span></div>
-    </div>
-  </div>
+<div class="setting-btn" onclick="openCalc()">Calculator</div>
 
-  <!-- CUTTING -->
-  <div class="card" onclick="openPage('cutting.html')">
-    <h3>Cutting</h3>
-    <div class="stats">
-      <div class="stat today">Today <span>0</span></div>
-      <div class="stat yesterday">Yesterday <span>0</span></div>
-      <div class="stat total">Total <span>0</span></div>
-    </div>
-  </div>
+<div class="setting-btn" onclick="toggleMode()" id="modeBtn">Dark Mode</div>
 
-  <!-- FURNISHED -->
-  <div class="card" onclick="openPage('furnished.html')">
-    <h3>Furnished</h3>
-    <div class="stats">
-      <div class="stat today">Today <span>0</span></div>
-      <div class="stat yesterday">Yesterday <span>0</span></div>
-      <div class="stat total">Total <span>0</span></div>
-    </div>
-  </div>
+<div class="setting-btn" id="dateTime"></div>
 
-  <!-- SETTINGS -->
-  <div class="card">
-    <h3>Settings</h3>
-    <div>
-      <div class="setting-btn">API Setting</div>
-      <div class="setting-btn">Reset Data</div>
-      <div class="setting-btn">User Management</div>
-      <div class="setting-btn">Export Data</div>
-      <div class="setting-btn" onclick="location.reload()">⬅ Refresh</div>
-    </div>
-  </div>
+<div class="setting-btn" onclick="exportCSV()">Export Data</div>
 
+<div class="setting-btn" onclick="funny()" id="funBtn">Tik</div>
+
+</div>
+
+</div>
+
+<!-- CALCULATOR POPUP -->
+<div class="popup" id="calcBox">
+<div class="calc">
+<input type="text" id="calcInput" placeholder="Enter calculation">
+<br>
+<button onclick="calculate()">=</button>
+</div>
 </div>
 
 <script>
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec";
 
-/* PAGE NAV */
-function openPage(page){
-  window.location.href = page;
+/* NAV */
+function openPage(p){
+  location.href=p;
 }
 
 /* LOAD DATA */
 function loadDashboard(){
+fetch(API_URL+"?type=stats")
+.then(res=>res.json())
+.then(d=>{
 
-  fetch(API_URL + "?type=stats")
-  .then(res => res.json())
-  .then(data => {
+pickup_today.innerText=d.todayPickup;
+pickup_total.innerText=d.totalPickup;
 
-    document.getElementById("pickup_today").innerText = data.todayPickup;
-    document.getElementById("pickup_yesterday").innerText = data.yesterdayPickup;
-    document.getElementById("pickup_total").innerText = data.totalPickup;
+return_today.innerText=d.todayReturn;
+return_total.innerText=d.totalReturn;
 
-    document.getElementById("return_today").innerText = data.todayReturn;
-    document.getElementById("return_yesterday").innerText = data.yesterdayReturn;
-    document.getElementById("return_total").innerText = data.totalReturn;
+let total=d.totalPickup+d.totalReturn;
+totalOrders.innerText=total;
+lookup_total.innerText=total;
 
-  });
+});
+}
+loadDashboard();
 
+/* CALCULATOR */
+function openCalc(){
+calcBox.style.display="block";
+}
+window.onclick=function(e){
+if(e.target==calcBox) calcBox.style.display="none";
+}
+function calculate(){
+calcInput.value=eval(calcInput.value);
 }
 
-loadDashboard();
+/* DARK MODE */
+function toggleMode(){
+document.body.classList.toggle("dark");
+modeBtn.innerText=
+document.body.classList.contains("dark")
+? "Light Mode":"Dark Mode";
+}
+
+/* LIVE TIME INDIA */
+setInterval(()=>{
+let now=new Date();
+dateTime.innerText=now.toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
+},1000);
+
+/* EXPORT CSV */
+function exportCSV(){
+fetch(API_URL+"?type=exchange")
+.then(res=>res.json())
+.then(data=>{
+
+let csv="Date,OrderID,Name,Desc,Pickup,Exchange,Status\n";
+
+data.forEach(r=>{
+csv+=`${r.date},${r.order_id},${r.name},${r.desc},${r.pickup},${r.exchange},${r.status}\n`;
+});
+
+let blob=new Blob([csv]);
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="data.csv";
+a.click();
+
+});
+}
+
+/* FUNNY BUTTON */
+function funny(){
+funBtn.innerText= funBtn.innerText==="Tik" ? "Tok" : "Tik";
+}
 
 </script>
 
