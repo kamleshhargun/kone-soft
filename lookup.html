@@ -41,16 +41,25 @@ button {
   background:#2d3e50;
   color:white;
   cursor:pointer;
+  margin:5px;
 }
 
 button:hover {
   background:#1b2838;
 }
 
+.clear-btn {
+  background:#e53935;
+}
+
+.clear-btn:hover {
+  background:#c62828;
+}
+
 table {
   margin:30px auto;
   border-collapse:collapse;
-  width:90%;
+  width:95%;
   background:#fff;
 }
 
@@ -82,11 +91,13 @@ th {
 <div class="search-box">
   <input type="text" id="orderId" placeholder="Enter Order ID">
   <button onclick="searchOrder()">Search</button>
+  <button class="clear-btn" onclick="clearTable()">Clear</button>
 </div>
 
 <table>
 <thead>
 <tr>
+<th>Order ID</th>
 <th>SKU</th>
 <th>Product</th>
 <th>Qty</th>
@@ -94,7 +105,7 @@ th {
 </thead>
 
 <tbody id="tableData">
-<tr><td colspan="3">Enter Order ID to search</td></tr>
+<tr><td colspan="4">Enter Order ID to search</td></tr>
 </tbody>
 </table>
 
@@ -104,56 +115,55 @@ th {
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxpHx77yM2aeGi6k-q8CwJA3YI1znrGbzzf3SjKrNhFK8eG5RxoEPHAKiFvsNq3L0s4/exec";
 
-/* SEARCH FUNCTION */
+/* SEARCH */
 function searchOrder(){
 
-  let raw = document.getElementById("orderId").value;
-
-  // 🔥 CLEAN INPUT (IMPORTANT)
-  let id = String(raw).trim();
+  let id = document.getElementById("orderId").value.trim();
 
   if(!id){
     alert("Enter Order ID ❗");
     return;
   }
 
-  document.getElementById("tableData").innerHTML =
-    "<tr><td colspan='3'>Loading...</td></tr>";
+  tableData.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
   fetch(API_URL + "?type=lookup&order_id=" + encodeURIComponent(id))
   .then(res => res.json())
   .then(data => {
 
-    console.log("API Response:", data);
-
     let html = "";
 
     if(!data || data.length === 0){
-      html = "<tr><td colspan='3'>No Data Found ❌</td></tr>";
+      html = "<tr><td colspan='4'>No Data Found ❌</td></tr>";
     } else {
 
       data.forEach(item => {
         html += `<tr>
-          <td>${item.sku ?? "-"}</td>
-          <td>${item.product ?? "-"}</td>
-          <td>${item.qty ?? "-"}</td>
+          <td>${item.order_id}</td>
+          <td>${item.sku}</td>
+          <td>${item.product}</td>
+          <td>${item.qty}</td>
         </tr>`;
       });
 
     }
 
-    document.getElementById("tableData").innerHTML = html;
+    tableData.innerHTML = html;
 
   })
-  .catch(err => {
-    console.error(err);
-    document.getElementById("tableData").innerHTML =
-      "<tr><td colspan='3'>Error ❌</td></tr>";
+  .catch(()=>{
+    tableData.innerHTML = "<tr><td colspan='4'>Error ❌</td></tr>";
   });
 
 }
 
-/* ENTER KEY SUPPORT */
+/* CLEAR TABLE */
+function clearTable(){
+  document.getElementById("orderId").value="";
+  tableData.innerHTML = "<tr><td colspan='4'>Enter Order ID to search</td></tr>";
+}
+
+/* ENTER KEY */
 document.getElementById("orderId").addEventListener("keypress", function(e){
   if(e.key === "Enter"){
     searchOrder();
