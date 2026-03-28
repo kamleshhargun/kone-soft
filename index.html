@@ -16,28 +16,25 @@ body {
 .header {
   background: #2d3e50;
   color: #fff;
-  padding: 15px 20px;
-}
-
-/* LEFT ALIGN CONTAINER */
-.header .left {
+  height: 70px; /* FIX HEIGHT */
   display: flex;
   align-items: center;
-  gap: 15px;
-  justify-content: flex-start; /* LEFT */
+  justify-content: center; /* text center */
+  position: relative;
 }
 
-/* LOGO SIZE BIG */
-.logo {
-  width: 100px;   /* yaha size control karo */
-  height: 40px;
-  object-fit: contain;
-}
-
-/* TEXT */
+/* TEXT CENTER FIX */
 .header span {
   font-size: 26px;
   font-weight: bold;
+}
+
+/* LOGO LEFT FIX */
+.logo {
+  position: absolute;
+  left: 20px;   /* bilkul left */
+  width: 120px; /* bada size */
+  height: auto;
 }
 
 /* GRID */
@@ -112,10 +109,8 @@ body {
 <body>
 
 <div class="header">
-  <div class="left">
-    <img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo">
-    <span>Harsidhi Ventures</span>
-  </div>
+  <img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo">
+  <span>Harsidhi Ventures</span>
 </div>
 
 <div class="dashboard">
