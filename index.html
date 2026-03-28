@@ -19,7 +19,6 @@ body {
   color:#fff;
 }
 
-/* HEADER */
 .header {
   background:#2d3e50;
   color:#fff;
@@ -42,9 +41,8 @@ body {
   font-weight:bold;
 }
 
-/* TOTAL */
 .total-box {
-  margin-top:15px;
+  margin-top:10px;
   font-size:20px;
   font-weight:bold;
 }
@@ -64,42 +62,52 @@ body {
   min-height:250px;
   background:#fff;
   border-radius:15px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.1);
   padding:15px;
   cursor:pointer;
   transition:0.3s;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
-.dark .card {
-  background:#1e293b;
-}
+.dark .card { background:#1e293b; }
 
 .card:hover {
   transform:translateY(-5px);
 }
 
 /* STATS */
+.stats {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
 .stat {
   background:#f1f3f9;
   padding:10px;
   border-radius:8px;
-  margin:6px 0;
 }
 
-.dark .stat {
-  background:#334155;
-}
+.dark .stat { background:#334155; }
 
 .stat span {
+  display:block;
   font-weight:bold;
   font-size:18px;
 }
+
+.today { border-left:5px solid #4CAF50; }
+.yesterday { border-left:5px solid #FF9800; }
+.total { border-left:5px solid #2196F3; }
 
 /* SETTINGS */
 .setting-btn {
   background:#2d3e50;
   color:#fff;
   padding:10px;
-  margin:5px;
+  margin-top:6px;
   border-radius:8px;
   cursor:pointer;
 }
@@ -117,11 +125,8 @@ body {
   box-shadow:0 0 20px rgba(0,0,0,0.3);
 }
 
-.dark .popup {
-  background:#1e293b;
-}
+.dark .popup { background:#1e293b; }
 
-/* CALCULATOR */
 .calc input {
   width:200px;
   padding:10px;
@@ -146,21 +151,69 @@ body {
 <!-- PICKUP -->
 <div class="card" onclick="openPage('pickup.html')">
 <h3>Pickup</h3>
-<div class="stat">Today <span id="pickup_today">0</span></div>
-<div class="stat">Total <span id="pickup_total">0</span></div>
+<div class="stats">
+<div class="stat today">Today <span id="pickup_today">0</span></div>
+<div class="stat yesterday">Yesterday <span id="pickup_yesterday">0</span></div>
+<div class="stat total">Total <span id="pickup_total">0</span></div>
+</div>
 </div>
 
 <!-- RETURN -->
 <div class="card" onclick="openPage('return.html')">
 <h3>Return</h3>
-<div class="stat">Today <span id="return_today">0</span></div>
-<div class="stat">Total <span id="return_total">0</span></div>
+<div class="stats">
+<div class="stat today">Today <span id="return_today">0</span></div>
+<div class="stat yesterday">Yesterday <span id="return_yesterday">0</span></div>
+<div class="stat total">Total <span id="return_total">0</span></div>
+</div>
 </div>
 
 <!-- LOOKUP -->
 <div class="card" onclick="openPage('lookup.html')">
 <h3>Search</h3>
-<div class="stat">Orders <span id="lookup_total">0</span></div>
+<div class="stats">
+<div class="stat total">Orders <span id="lookup_total">0</span></div>
+</div>
+</div>
+
+<!-- RETURN REQUEST -->
+<div class="card" onclick="openPage('return-request.html')">
+<h3>Return Request</h3>
+<div class="stats">
+<div class="stat today">Today <span>0</span></div>
+<div class="stat yesterday">Yesterday <span>0</span></div>
+<div class="stat total">Total <span>0</span></div>
+</div>
+</div>
+
+<!-- CUSTOMER -->
+<div class="card" onclick="openPage('customer.html')">
+<h3>Customer</h3>
+<div class="stats">
+<div class="stat today">Today <span>0</span></div>
+<div class="stat yesterday">Yesterday <span>0</span></div>
+<div class="stat total">Total <span>0</span></div>
+</div>
+</div>
+
+<!-- CUTTING -->
+<div class="card" onclick="openPage('cutting.html')">
+<h3>Cutting</h3>
+<div class="stats">
+<div class="stat today">Today <span>0</span></div>
+<div class="stat yesterday">Yesterday <span>0</span></div>
+<div class="stat total">Total <span>0</span></div>
+</div>
+</div>
+
+<!-- FURNISHED -->
+<div class="card" onclick="openPage('furnished.html')">
+<h3>Furnished</h3>
+<div class="stats">
+<div class="stat today">Today <span>0</span></div>
+<div class="stat yesterday">Yesterday <span>0</span></div>
+<div class="stat total">Total <span>0</span></div>
+</div>
 </div>
 
 <!-- SETTINGS -->
@@ -181,7 +234,7 @@ body {
 
 </div>
 
-<!-- CALCULATOR POPUP -->
+<!-- CALCULATOR -->
 <div class="popup" id="calcBox">
 <div class="calc">
 <input type="text" id="calcInput" placeholder="Enter calculation">
@@ -194,10 +247,7 @@ body {
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec";
 
-/* NAV */
-function openPage(p){
-  location.href=p;
-}
+function openPage(p){ location.href=p; }
 
 /* LOAD DATA */
 function loadDashboard(){
@@ -206,9 +256,11 @@ fetch(API_URL+"?type=stats")
 .then(d=>{
 
 pickup_today.innerText=d.todayPickup;
+pickup_yesterday.innerText=d.yesterdayPickup;
 pickup_total.innerText=d.totalPickup;
 
 return_today.innerText=d.todayReturn;
+return_yesterday.innerText=d.yesterdayReturn;
 return_total.innerText=d.totalReturn;
 
 let total=d.totalPickup+d.totalReturn;
@@ -220,28 +272,19 @@ lookup_total.innerText=total;
 loadDashboard();
 
 /* CALCULATOR */
-function openCalc(){
-calcBox.style.display="block";
-}
-window.onclick=function(e){
-if(e.target==calcBox) calcBox.style.display="none";
-}
-function calculate(){
-calcInput.value=eval(calcInput.value);
-}
+function openCalc(){ calcBox.style.display="block"; }
+window.onclick=e=>{ if(e.target==calcBox) calcBox.style.display="none"; }
+function calculate(){ calcInput.value=eval(calcInput.value); }
 
 /* DARK MODE */
 function toggleMode(){
 document.body.classList.toggle("dark");
-modeBtn.innerText=
-document.body.classList.contains("dark")
-? "Light Mode":"Dark Mode";
+modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
 }
 
 /* LIVE TIME INDIA */
 setInterval(()=>{
-let now=new Date();
-dateTime.innerText=now.toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
+dateTime.innerText=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
 },1000);
 
 /* EXPORT CSV */
@@ -249,25 +292,21 @@ function exportCSV(){
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
 .then(data=>{
-
 let csv="Date,OrderID,Name,Desc,Pickup,Exchange,Status\n";
-
 data.forEach(r=>{
 csv+=`${r.date},${r.order_id},${r.name},${r.desc},${r.pickup},${r.exchange},${r.status}\n`;
 });
-
 let blob=new Blob([csv]);
 let a=document.createElement("a");
 a.href=URL.createObjectURL(blob);
 a.download="data.csv";
 a.click();
-
 });
 }
 
-/* FUNNY BUTTON */
+/* FUNNY */
 function funny(){
-funBtn.innerText= funBtn.innerText==="Tik" ? "Tok" : "Tik";
+funBtn.innerText = funBtn.innerText==="Tik" ? "Tok" : "Tik";
 }
 
 </script>
