@@ -7,41 +7,38 @@
 
 <style>
 body {
-  font-family:'Segoe UI', Arial;
-  margin:0;
-  background:#f4f6fb;
-  text-align:center;
+  font-family: 'Segoe UI', Arial;
+  margin: 0;
+  background: #f4f6fb;
+  text-align: center;
   transition:0.3s;
 }
 
-.dark {
-  background:#0f172a;
-  color:#fff;
-}
+.dark { background:#0f172a; color:#fff; }
 
 .header {
-  background:#2d3e50;
-  color:#fff;
-  height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.logo {
-  position:absolute;
-  left:20px;
-  width:120px;
-  cursor:pointer;
+  background: #2d3e50;
+  color: #fff;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .header span {
-  font-size:26px;
-  font-weight:bold;
+  font-size: 26px;
+  font-weight: bold;
 }
 
-.total-box {
+.logo {
+  position: absolute;
+  left: 20px;
+  width: 120px;
+  cursor:pointer;
+}
+
+.total-box{
   margin-top:10px;
   font-size:20px;
   font-weight:bold;
@@ -49,67 +46,73 @@ body {
 
 /* GRID */
 .dashboard {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:25px;
-  padding:30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  padding: 30px;
 }
 
 /* CARD */
 .card {
-  width:250px;
-  min-height:250px;
-  background:#fff;
-  border-radius:15px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.1);
-  padding:15px;
-  cursor:pointer;
-  transition:0.3s;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+  width: 250px;
+  min-height: 250px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .dark .card { background:#1e293b; }
 
 .card:hover {
-  transform:translateY(-5px);
+  transform: translateY(-5px);
+  background: #eef3ff;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 18px;
 }
 
 /* STATS */
 .stats {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .stat {
-  background:#f1f3f9;
-  padding:10px;
-  border-radius:8px;
+  background: #f1f3f9;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .dark .stat { background:#334155; }
 
 .stat span {
-  display:block;
-  font-weight:bold;
-  font-size:18px;
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
 }
 
-.today { border-left:5px solid #4CAF50; }
-.yesterday { border-left:5px solid #FF9800; }
-.total { border-left:5px solid #2196F3; }
+.today { border-left: 5px solid #4CAF50; }
+.yesterday { border-left: 5px solid #FF9800; }
+.total { border-left: 5px solid #2196F3; }
 
-/* SETTINGS */
+/* SETTING */
 .setting-btn {
-  background:#2d3e50;
-  color:#fff;
-  padding:10px;
-  margin-top:6px;
-  border-radius:8px;
-  cursor:pointer;
+  background: #2d3e50;
+  color: white;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 /* POPUP */
@@ -122,16 +125,10 @@ body {
   background:#fff;
   padding:20px;
   border-radius:10px;
-  box-shadow:0 0 20px rgba(0,0,0,0.3);
 }
 
 .dark .popup { background:#1e293b; }
 
-.calc input {
-  width:200px;
-  padding:10px;
-  margin:5px;
-}
 </style>
 </head>
 
@@ -177,7 +174,7 @@ body {
 </div>
 
 <!-- RETURN REQUEST -->
-<div class="card" onclick="openPage('return-request.html')">
+<div class="card">
 <h3>Return Request</h3>
 <div class="stats">
 <div class="stat today">Today <span>0</span></div>
@@ -187,7 +184,7 @@ body {
 </div>
 
 <!-- CUSTOMER -->
-<div class="card" onclick="openPage('customer.html')">
+<div class="card">
 <h3>Customer</h3>
 <div class="stats">
 <div class="stat today">Today <span>0</span></div>
@@ -197,7 +194,7 @@ body {
 </div>
 
 <!-- CUTTING -->
-<div class="card" onclick="openPage('cutting.html')">
+<div class="card">
 <h3>Cutting</h3>
 <div class="stats">
 <div class="stat today">Today <span>0</span></div>
@@ -207,7 +204,7 @@ body {
 </div>
 
 <!-- FURNISHED -->
-<div class="card" onclick="openPage('furnished.html')">
+<div class="card">
 <h3>Furnished</h3>
 <div class="stats">
 <div class="stat today">Today <span>0</span></div>
@@ -236,11 +233,9 @@ body {
 
 <!-- CALCULATOR -->
 <div class="popup" id="calcBox">
-<div class="calc">
-<input type="text" id="calcInput" placeholder="Enter calculation">
-<br>
+<input type="text" id="calcInput">
+<br><br>
 <button onclick="calculate()">=</button>
-</div>
 </div>
 
 <script>
@@ -254,7 +249,6 @@ function loadDashboard(){
 fetch(API_URL+"?type=stats")
 .then(res=>res.json())
 .then(d=>{
-
 pickup_today.innerText=d.todayPickup;
 pickup_yesterday.innerText=d.yesterdayPickup;
 pickup_total.innerText=d.totalPickup;
@@ -266,12 +260,11 @@ return_total.innerText=d.totalReturn;
 let total=d.totalPickup+d.totalReturn;
 totalOrders.innerText=total;
 lookup_total.innerText=total;
-
 });
 }
 loadDashboard();
 
-/* CALCULATOR */
+/* CALC */
 function openCalc(){ calcBox.style.display="block"; }
 window.onclick=e=>{ if(e.target==calcBox) calcBox.style.display="none"; }
 function calculate(){ calcInput.value=eval(calcInput.value); }
@@ -282,20 +275,18 @@ document.body.classList.toggle("dark");
 modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
 }
 
-/* LIVE TIME INDIA */
+/* TIME */
 setInterval(()=>{
 dateTime.innerText=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
 },1000);
 
-/* EXPORT CSV */
+/* EXPORT */
 function exportCSV(){
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
 .then(data=>{
-let csv="Date,OrderID,Name,Desc,Pickup,Exchange,Status\n";
-data.forEach(r=>{
-csv+=`${r.date},${r.order_id},${r.name},${r.desc},${r.pickup},${r.exchange},${r.status}\n`;
-});
+let csv="data\n";
+data.forEach(r=>{ csv+=JSON.stringify(r)+"\n"; });
 let blob=new Blob([csv]);
 let a=document.createElement("a");
 a.href=URL.createObjectURL(blob);
@@ -304,7 +295,7 @@ a.click();
 });
 }
 
-/* FUNNY */
+/* FUN */
 function funny(){
 funBtn.innerText = funBtn.innerText==="Tik" ? "Tok" : "Tik";
 }
