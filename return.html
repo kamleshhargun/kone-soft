@@ -9,28 +9,60 @@
 
 <style>
 body { font-family:'Segoe UI'; margin:0; background:#f4f6fb; text-align:center; }
-.header { background:#2d3e50; color:#fff; padding:20px; font-size:26px; font-weight:bold; }
-.container { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:30px; }
+
+.header {
+  background:#2d3e50;
+  color:#fff;
+  padding:20px;
+  font-size:26px;
+  font-weight:bold;
+}
+
+.container {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+  padding:30px;
+}
 
 .box {
-  width:220px; height:220px; background:#fff;
-  border-radius:12px; display:flex;
-  justify-content:center; align-items:center;
-  cursor:pointer; font-weight:bold;
+  width:220px;
+  height:220px;
+  background:#fff;
+  border-radius:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  font-weight:bold;
   box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 .scan-area { display:none; margin-top:30px; }
 
 input {
-  width:260px; padding:12px;
-  margin:10px; font-size:16px;
+  width:260px;
+  padding:12px;
+  margin:10px;
+  font-size:16px;
 }
 
+/* MESSAGE */
 #msg {
   margin-top:15px;
   font-weight:bold;
-  color:green;
+  font-size:18px;
+}
+
+/* SUCCESS ANIMATION */
+.success {
+  animation: pop 0.4s ease;
+}
+
+@keyframes pop {
+  0% { transform:scale(0.7); opacity:0; }
+  100% { transform:scale(1); opacity:1; }
 }
 
 #reader { width:300px; margin:auto; }
@@ -65,33 +97,52 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxpHx77yM2aeGi6k-q8CwJA
 function resetFields(){
   orderId.value="";
   tracking.value="";
-  msg.innerText="";
   orderId.focus();
 }
 
-/* SEND DATA */
+/* 🔊 BEEP */
+function playBeep(){
+  let audio = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+  audio.play();
+}
+
+/* ✅ SEND DATA (FAST UI) */
 function sendData(){
 
   if(!orderId.value || !tracking.value){
+    msg.style.color="red";
     msg.innerText="Missing Data ❌";
     return;
   }
 
+  // ⚡ Instant Success
+  msg.style.color="green";
+  msg.classList.add("success");
+  msg.innerText="Completed ✅";
+
+  // 🔊 + 📳
+  playBeep();
+  if(navigator.vibrate) navigator.vibrate(200);
+
+  // Background API
   fetch(API_URL,{
     method:"POST",
     body:JSON.stringify({
-      mode:"Return", // ✅ IMPORTANT
+      mode:"Return",
       order_id:orderId.value,
       tracking:tracking.value
     })
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    msg.innerText="Completed ✅";
-    setTimeout(()=>msg.innerText="",1500);
-    resetFields();
+  }).catch(()=>{
+    msg.style.color="red";
+    msg.innerText="Server Error ❌";
   });
 
+  setTimeout(()=>{
+    msg.innerText="";
+    msg.classList.remove("success");
+  },1500);
+
+  resetFields();
 }
 
 /* MODES */
@@ -126,6 +177,10 @@ function openCamera(){
       }
       else if(!tracking.value){
         tracking.value=text;
+
+        playBeep();
+        if(navigator.vibrate) navigator.vibrate(200);
+
         sendData();
         html5Qr.stop();
       }
