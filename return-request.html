@@ -6,23 +6,20 @@
 <title>Return Request</title>
 
 <style>
-body {
-  font-family:'Segoe UI';
-  margin:0;
-  background:#f4f6fb;
-  text-align:center;
-}
+body { font-family:'Segoe UI'; margin:0; background:#f4f6fb; }
 
 .header {
   background:#2d3e50;
   color:#fff;
   padding:18px;
+  text-align:center;
   font-size:22px;
   font-weight:bold;
 }
 
 /* SEARCH */
 .search-box {
+  text-align:center;
   margin:15px;
 }
 
@@ -33,13 +30,10 @@ input {
   font-size:16px;
   border-radius:10px;
   border:1px solid #ccc;
-  outline:none;
 }
 
-/* CARD LIST */
-.list {
-  padding:10px;
-}
+/* CARD */
+.list { padding:10px; }
 
 .card {
   background:#fff;
@@ -47,14 +41,10 @@ input {
   padding:12px;
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  text-align:left;
   max-width:400px;
 }
 
-.row {
-  font-size:14px;
-  margin:3px 0;
-}
+.row { font-size:14px; margin:4px 0; }
 
 .title {
   font-weight:bold;
@@ -62,9 +52,9 @@ input {
   color:#2d3e50;
 }
 
+/* STATUS */
 .tag {
-  display:inline-block;
-  padding:3px 8px;
+  padding:4px 10px;
   border-radius:6px;
   font-size:12px;
   color:#fff;
@@ -72,13 +62,29 @@ input {
 
 .green { background:#4CAF50; }
 .orange { background:#FF9800; }
-.blue { background:#2196F3; }
+
+/* BUTTONS */
+.btns { margin-top:8px; }
+
+.btn {
+  padding:6px 10px;
+  margin:3px;
+  border:none;
+  border-radius:6px;
+  color:#fff;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.pickup { background:#2196F3; }
+.exchange { background:#9C27B0; }
+.complete { background:#4CAF50; }
 
 .no-data {
+  text-align:center;
   margin-top:30px;
   color:#888;
 }
-
 </style>
 </head>
 
@@ -87,7 +93,7 @@ input {
 <div class="header">Return Request</div>
 
 <div class="search-box">
-  <input type="text" id="searchInput" placeholder="Search Order ID / Mobile">
+<input type="text" id="searchInput" placeholder="Search Order ID / Mobile">
 </div>
 
 <div class="list" id="list"></div>
@@ -98,7 +104,7 @@ const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
 let fullData = [];
 
-/* ================= LOAD ================= */
+/* LOAD DATA */
 function loadData(){
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
@@ -108,7 +114,7 @@ fetch(API_URL+"?type=exchange")
 });
 }
 
-/* ================= RENDER ================= */
+/* RENDER */
 function render(data){
 
 let container = document.getElementById("list");
@@ -121,7 +127,8 @@ if(data.length === 0){
 
 data.forEach(r=>{
 
-let statusColor = r.exchange === "Yes" ? "green" : "orange";
+let statusColor = r.description === "Completed" ? "green" : "orange";
+let statusText = r.description === "Completed" ? "Completed" : "Pending";
 
 let card = document.createElement("div");
 card.className="card";
@@ -134,15 +141,17 @@ card.innerHTML = `
 <div class="row">📅 Date: ${r.date}</div>
 
 <div class="row">
-<span class="tag ${statusColor}">
-${r.exchange || "Pending"}
-</span>
+<span class="tag ${statusColor}">${statusText}</span>
 </div>
 
 <div class="row">🔁 Return: ${r.return_product}</div>
 <div class="row">🔄 Exchange: ${r.exchange_product}</div>
 
-<div class="row">💬 ${r.description || "-"}</div>
+<div class="btns">
+<button class="btn pickup" onclick="update('${r.order_id}','pickup')">Pickup</button>
+<button class="btn exchange" onclick="update('${r.order_id}','exchange')">Exchange</button>
+<button class="btn complete" onclick="complete('${r.order_id}')">Complete</button>
+</div>
 `;
 
 container.appendChild(card);
@@ -151,7 +160,42 @@ container.appendChild(card);
 
 }
 
-/* ================= LIVE SEARCH ================= */
+/* UPDATE */
+function update(orderId, field){
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"updateExchange",
+order_id:orderId,
+field:field
+})
+})
+.then(res=>res.json())
+.then(()=>{
+loadData();
+});
+
+}
+
+/* COMPLETE */
+function complete(orderId){
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"completeExchange",
+order_id:orderId
+})
+})
+.then(res=>res.json())
+.then(()=>{
+loadData();
+});
+
+}
+
+/* SEARCH */
 searchInput.addEventListener("input", ()=>{
 
 let val = searchInput.value.toLowerCase().trim();
@@ -170,7 +214,7 @@ render(filtered);
 
 });
 
-/* ================= INIT ================= */
+/* INIT */
 loadData();
 
 </script>
