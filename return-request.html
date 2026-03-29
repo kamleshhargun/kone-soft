@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Return Request Search</title>
+<title>Return Request</title>
 
 <style>
 body {
@@ -16,54 +16,69 @@ body {
 .header {
   background:#2d3e50;
   color:#fff;
-  padding:20px;
-  font-size:24px;
+  padding:18px;
+  font-size:22px;
   font-weight:bold;
 }
 
+/* SEARCH */
 .search-box {
-  margin:20px;
+  margin:15px;
 }
 
 input {
-  width:260px;
+  width:85%;
+  max-width:350px;
   padding:12px;
   font-size:16px;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid #ccc;
+  outline:none;
 }
 
-button {
-  padding:12px 15px;
-  border:none;
-  background:#2d3e50;
-  color:#fff;
-  border-radius:8px;
-  margin-left:5px;
-  cursor:pointer;
+/* CARD LIST */
+.list {
+  padding:10px;
 }
 
-table {
-  width:95%;
-  margin:20px auto;
-  border-collapse:collapse;
+.card {
   background:#fff;
+  margin:10px auto;
+  padding:12px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  text-align:left;
+  max-width:400px;
 }
 
-th, td {
-  padding:8px;
-  border:1px solid #ccc;
-  font-size:13px;
+.row {
+  font-size:14px;
+  margin:3px 0;
 }
 
-th {
-  background:#2d3e50;
+.title {
+  font-weight:bold;
+  font-size:16px;
+  color:#2d3e50;
+}
+
+.tag {
+  display:inline-block;
+  padding:3px 8px;
+  border-radius:6px;
+  font-size:12px;
   color:#fff;
 }
 
-tr:hover {
-  background:#f1f3f9;
+.green { background:#4CAF50; }
+.orange { background:#FF9800; }
+.blue { background:#2196F3; }
+
+.no-data {
+  margin-top:30px;
+  color:#888;
 }
+
 </style>
 </head>
 
@@ -72,30 +87,10 @@ tr:hover {
 <div class="header">Return Request</div>
 
 <div class="search-box">
-  <input type="text" id="searchInput" placeholder="Enter Order ID / Mobile">
-  <button onclick="searchData()">Search</button>
-  <button onclick="loadData()">Reset</button>
+  <input type="text" id="searchInput" placeholder="Search Order ID / Mobile">
 </div>
 
-<table id="dataTable">
-<thead>
-<tr>
-<th>Date</th>
-<th>Request ID</th>
-<th>Name</th>
-<th>Order ID</th>
-<th>Mobile</th>
-<th>Email</th>
-<th>Return</th>
-<th>Exchange</th>
-<th>UPI/Bank</th>
-<th>Return Product</th>
-<th>Exchange Product</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+<div class="list" id="list"></div>
 
 <script>
 
@@ -103,52 +98,66 @@ const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
 let fullData = [];
 
-/* ================= LOAD ALL DATA ================= */
+/* ================= LOAD ================= */
 function loadData(){
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
 .then(data=>{
-  fullData = data;
-  renderTable(data);
+  fullData = data.reverse();
+  render(fullData);
 });
 }
 
 /* ================= RENDER ================= */
-function renderTable(data){
-let tbody = document.querySelector("#dataTable tbody");
-tbody.innerHTML="";
+function render(data){
 
-data.reverse().forEach(row=>{
+let container = document.getElementById("list");
+container.innerHTML="";
 
-let tr = document.createElement("tr");
-
-tr.innerHTML = `
-<td>${row.date}</td>
-<td>${row.request_id}</td>
-<td>${row.name}</td>
-<td>${row.order_id}</td>
-<td>${row.mobile}</td>
-<td>${row.email}</td>
-<td>${row.return}</td>
-<td>${row.exchange}</td>
-<td>${row.upi_bank}</td>
-<td>${row.return_product}</td>
-<td>${row.exchange_product}</td>
-<td>${row.description}</td>
-`;
-
-tbody.appendChild(tr);
-
-});
+if(data.length === 0){
+  container.innerHTML = `<div class="no-data">No Data Found</div>`;
+  return;
 }
 
-/* ================= SEARCH ================= */
-function searchData(){
+data.forEach(r=>{
+
+let statusColor = r.exchange === "Yes" ? "green" : "orange";
+
+let card = document.createElement("div");
+card.className="card";
+
+card.innerHTML = `
+<div class="title">${r.name || "-"}</div>
+
+<div class="row">📦 Order: ${r.order_id}</div>
+<div class="row">📱 Mobile: ${r.mobile}</div>
+<div class="row">📅 Date: ${r.date}</div>
+
+<div class="row">
+<span class="tag ${statusColor}">
+${r.exchange || "Pending"}
+</span>
+</div>
+
+<div class="row">🔁 Return: ${r.return_product}</div>
+<div class="row">🔄 Exchange: ${r.exchange_product}</div>
+
+<div class="row">💬 ${r.description || "-"}</div>
+`;
+
+container.appendChild(card);
+
+});
+
+}
+
+/* ================= LIVE SEARCH ================= */
+searchInput.addEventListener("input", ()=>{
 
 let val = searchInput.value.toLowerCase().trim();
 
 if(!val){
-  renderTable(fullData);
+  render(fullData);
   return;
 }
 
@@ -157,16 +166,11 @@ let filtered = fullData.filter(r =>
   String(r.mobile).toLowerCase().includes(val)
 );
 
-renderTable(filtered);
+render(filtered);
 
-}
-
-/* ENTER KEY SEARCH */
-searchInput.addEventListener("keypress",e=>{
-if(e.key==="Enter") searchData();
 });
 
-/* AUTO LOAD */
+/* ================= INIT ================= */
 loadData();
 
 </script>
