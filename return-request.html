@@ -10,12 +10,46 @@
 <style>
 body { font-family:'Segoe UI'; margin:0; background:#f4f6fb; text-align:center; }
 .header { background:#2d3e50; color:#fff; padding:20px; font-size:26px; font-weight:bold; }
-.container { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:30px; }
-.box { width:220px; height:220px; background:#fff; border-radius:12px; display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-.scan-area { display:none; margin-top:30px; }
-input { width:250px; padding:10px; margin:10px; font-size:16px; }
-#msg { margin-top:15px; font-weight:bold; color:green; }
+
+.container { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:20px; }
+
+.box {
+  width:180px; height:180px;
+  background:#fff; border-radius:12px;
+  display:flex; justify-content:center; align-items:center;
+  cursor:pointer; font-weight:bold;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.scan-area { display:none; margin-top:20px; }
+
+input {
+  width:220px; padding:10px; margin:10px;
+  font-size:16px;
+}
+
+#msg { margin-top:10px; font-weight:bold; color:green; }
+
 #reader { width:300px; margin:auto; }
+
+/* TABLE */
+table {
+  width:95%;
+  margin:30px auto;
+  border-collapse:collapse;
+  background:#fff;
+}
+
+th, td {
+  padding:8px;
+  border:1px solid #ccc;
+  font-size:13px;
+}
+
+th {
+  background:#2d3e50;
+  color:#fff;
+}
 </style>
 </head>
 
@@ -38,11 +72,70 @@ input { width:250px; padding:10px; margin:10px; font-size:16px; }
 
 <div id="reader"></div>
 
+<!-- ✅ TABLE -->
+<table id="dataTable">
+<thead>
+<tr>
+<th>Date</th>
+<th>Request ID</th>
+<th>Name</th>
+<th>Order ID</th>
+<th>Mobile</th>
+<th>Email</th>
+<th>Return</th>
+<th>Exchange</th>
+<th>UPI/Bank</th>
+<th>Return Product</th>
+<th>Exchange Product</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
 <script>
+
 const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
+// ================= LOAD DATA =================
+function loadData(){
+  fetch(API_URL + "?type=exchange")
+  .then(res=>res.json())
+  .then(data=>{
+
+    let tbody = document.querySelector("#dataTable tbody");
+    tbody.innerHTML="";
+
+    data.reverse().forEach(row=>{
+
+      let tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${row.date}</td>
+        <td>${row.request_id}</td>
+        <td>${row.name}</td>
+        <td>${row.order_id}</td>
+        <td>${row.mobile}</td>
+        <td>${row.email}</td>
+        <td>${row.return}</td>
+        <td>${row.exchange}</td>
+        <td>${row.upi_bank}</td>
+        <td>${row.return_product}</td>
+        <td>${row.exchange_product}</td>
+        <td>${row.description}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  });
+}
+
+// ================= SCANNER =================
 function resetFields(){
-  orderId.value=""; tracking.value=""; msg.innerText="";
+  orderId.value="";
+  tracking.value="";
+  msg.innerText="";
   orderId.focus();
 }
 
@@ -59,6 +152,7 @@ function sendData(){
   .then(()=>{
     msg.innerText="Completed ✅";
     resetFields();
+    loadData(); // refresh table
   });
 }
 
@@ -66,14 +160,18 @@ function openScanner(){ scanArea.style.display="block"; reader.innerHTML=""; res
 function openManual(){ scanArea.style.display="block"; reader.innerHTML=""; resetFields(); }
 
 let html5Qr;
+
 function openCamera(){
   scanArea.style.display="block";
   resetFields();
+
   html5Qr=new Html5Qrcode("reader");
+
   html5Qr.start({facingMode:"environment"},{fps:10,qrbox:250},
     (txt)=>{
-      if(!orderId.value){ orderId.value=txt; }
-      else{
+      if(!orderId.value){
+        orderId.value=txt;
+      } else {
         tracking.value=txt;
         sendData();
         html5Qr.stop();
@@ -82,10 +180,21 @@ function openCamera(){
   );
 }
 
-orderId.addEventListener("keypress",e=>{ if(e.key==="Enter") tracking.focus(); });
-tracking.addEventListener("keypress",e=>{ if(e.key==="Enter") sendData(); });
+orderId.addEventListener("keypress",e=>{
+  if(e.key==="Enter") tracking.focus();
+});
 
-function goBack(){ window.location.href="index.html"; }
+tracking.addEventListener("keypress",e=>{
+  if(e.key==="Enter") sendData();
+});
+
+function goBack(){
+  window.location.href="index.html";
+}
+
+// ✅ AUTO LOAD
+loadData();
+
 </script>
 
 </body>
