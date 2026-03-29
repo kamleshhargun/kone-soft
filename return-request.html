@@ -3,39 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Return Request</title>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
+<title>Return Request Search</title>
 
 <style>
-body { font-family:'Segoe UI'; margin:0; background:#f4f6fb; text-align:center; }
-.header { background:#2d3e50; color:#fff; padding:20px; font-size:26px; font-weight:bold; }
-
-.container { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:20px; }
-
-.box {
-  width:180px; height:180px;
-  background:#fff; border-radius:12px;
-  display:flex; justify-content:center; align-items:center;
-  cursor:pointer; font-weight:bold;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+body {
+  font-family:'Segoe UI';
+  margin:0;
+  background:#f4f6fb;
+  text-align:center;
 }
 
-.scan-area { display:none; margin-top:20px; }
+.header {
+  background:#2d3e50;
+  color:#fff;
+  padding:20px;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.search-box {
+  margin:20px;
+}
 
 input {
-  width:220px; padding:10px; margin:10px;
+  width:260px;
+  padding:12px;
   font-size:16px;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 
-#msg { margin-top:10px; font-weight:bold; color:green; }
+button {
+  padding:12px 15px;
+  border:none;
+  background:#2d3e50;
+  color:#fff;
+  border-radius:8px;
+  margin-left:5px;
+  cursor:pointer;
+}
 
-#reader { width:300px; margin:auto; }
-
-/* TABLE */
 table {
   width:95%;
-  margin:30px auto;
+  margin:20px auto;
   border-collapse:collapse;
   background:#fff;
 }
@@ -50,6 +60,10 @@ th {
   background:#2d3e50;
   color:#fff;
 }
+
+tr:hover {
+  background:#f1f3f9;
+}
 </style>
 </head>
 
@@ -57,22 +71,12 @@ th {
 
 <div class="header">Return Request</div>
 
-<div class="container">
-  <div class="box" onclick="openScanner()">Scan by Scanner</div>
-  <div class="box" onclick="openCamera()">Scan by Camera</div>
-  <div class="box" onclick="openManual()">Manual</div>
-  <div class="box" onclick="goBack()">Back</div>
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="Enter Order ID / Mobile">
+  <button onclick="searchData()">Search</button>
+  <button onclick="loadData()">Reset</button>
 </div>
 
-<div class="scan-area" id="scanArea">
-  <input type="text" id="orderId" placeholder="Scan Order ID">
-  <input type="text" id="tracking" placeholder="Scan Tracking">
-  <div id="msg"></div>
-</div>
-
-<div id="reader"></div>
-
-<!-- ✅ TABLE -->
 <table id="dataTable">
 <thead>
 <tr>
@@ -97,102 +101,72 @@ th {
 
 const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
-// ================= LOAD DATA =================
+let fullData = [];
+
+/* ================= LOAD ALL DATA ================= */
 function loadData(){
-  fetch(API_URL + "?type=exchange")
-  .then(res=>res.json())
-  .then(data=>{
-
-    let tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML="";
-
-    data.reverse().forEach(row=>{
-
-      let tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td>${row.date}</td>
-        <td>${row.request_id}</td>
-        <td>${row.name}</td>
-        <td>${row.order_id}</td>
-        <td>${row.mobile}</td>
-        <td>${row.email}</td>
-        <td>${row.return}</td>
-        <td>${row.exchange}</td>
-        <td>${row.upi_bank}</td>
-        <td>${row.return_product}</td>
-        <td>${row.exchange_product}</td>
-        <td>${row.description}</td>
-      `;
-
-      tbody.appendChild(tr);
-    });
-
-  });
+fetch(API_URL+"?type=exchange")
+.then(res=>res.json())
+.then(data=>{
+  fullData = data;
+  renderTable(data);
+});
 }
 
-// ================= SCANNER =================
-function resetFields(){
-  orderId.value="";
-  tracking.value="";
-  msg.innerText="";
-  orderId.focus();
+/* ================= RENDER ================= */
+function renderTable(data){
+let tbody = document.querySelector("#dataTable tbody");
+tbody.innerHTML="";
+
+data.reverse().forEach(row=>{
+
+let tr = document.createElement("tr");
+
+tr.innerHTML = `
+<td>${row.date}</td>
+<td>${row.request_id}</td>
+<td>${row.name}</td>
+<td>${row.order_id}</td>
+<td>${row.mobile}</td>
+<td>${row.email}</td>
+<td>${row.return}</td>
+<td>${row.exchange}</td>
+<td>${row.upi_bank}</td>
+<td>${row.return_product}</td>
+<td>${row.exchange_product}</td>
+<td>${row.description}</td>
+`;
+
+tbody.appendChild(tr);
+
+});
 }
 
-function sendData(){
-  fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      mode:"return_request",
-      order_id:orderId.value,
-      tracking:tracking.value
-    })
-  })
-  .then(r=>r.json())
-  .then(()=>{
-    msg.innerText="Completed ✅";
-    resetFields();
-    loadData(); // refresh table
-  });
+/* ================= SEARCH ================= */
+function searchData(){
+
+let val = searchInput.value.toLowerCase().trim();
+
+if(!val){
+  renderTable(fullData);
+  return;
 }
 
-function openScanner(){ scanArea.style.display="block"; reader.innerHTML=""; resetFields(); }
-function openManual(){ scanArea.style.display="block"; reader.innerHTML=""; resetFields(); }
+let filtered = fullData.filter(r =>
+  String(r.order_id).toLowerCase().includes(val) ||
+  String(r.mobile).toLowerCase().includes(val)
+);
 
-let html5Qr;
+renderTable(filtered);
 
-function openCamera(){
-  scanArea.style.display="block";
-  resetFields();
-
-  html5Qr=new Html5Qrcode("reader");
-
-  html5Qr.start({facingMode:"environment"},{fps:10,qrbox:250},
-    (txt)=>{
-      if(!orderId.value){
-        orderId.value=txt;
-      } else {
-        tracking.value=txt;
-        sendData();
-        html5Qr.stop();
-      }
-    }
-  );
 }
 
-orderId.addEventListener("keypress",e=>{
-  if(e.key==="Enter") tracking.focus();
+/* ENTER KEY SEARCH */
+searchInput.addEventListener("keypress",e=>{
+if(e.key==="Enter") searchData();
 });
 
-tracking.addEventListener("keypress",e=>{
-  if(e.key==="Enter") sendData();
-});
-
-function goBack(){
-  window.location.href="index.html";
-}
-
-// ✅ AUTO LOAD
+/* AUTO LOAD */
 loadData();
 
 </script>
