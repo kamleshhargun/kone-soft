@@ -143,18 +143,18 @@ pageData.forEach(r=>{
 let tr = document.createElement("tr");
 
 tr.innerHTML = `
-<td>${r.date}</td>
-<td>${r.request_id}</td>
-<td>${r.name}</td>
-<td>${r.order_id}</td>
-<td>${r.mobile}</td>
-<td>${r.email}</td>
-<td>${r.return}</td>
-<td>${r.exchange}</td>
-<td>${r.upi_bank}</td>
-<td>${r.return_product}</td>
-<td>${r.exchange_product}</td>
-<td>${r.description}</td>
+<td>${r.date || ""}</td>
+<td>${r.request_id || ""}</td>
+<td>${r.name || ""}</td>
+<td>${r.order_id || ""}</td>
+<td>${r.mobile || ""}</td>
+<td>${r.email || ""}</td>
+<td>${r.return || ""}</td>
+<td>${r.exchange || ""}</td>
+<td>${r.upi_bank || ""}</td>
+<td>${r.return_product || ""}</td>
+<td>${r.exchange_product || ""}</td>
+<td>${r.description || ""}</td>
 `;
 
 tbody.appendChild(tr);
