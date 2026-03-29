@@ -6,125 +6,58 @@
 <title>Dashboard</title>
 
 <style>
-body {
-  font-family: 'Segoe UI', Arial;
-  margin: 0;
-  background: #f4f6fb;
-  text-align: center;
-  transition:0.3s;
-}
-
+body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:center; transition:0.3s; }
 .dark { background:#0f172a; color:#fff; }
 
 .header {
-  background: #2d3e50;
-  color: #fff;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  background:#2d3e50; color:#fff; height:70px;
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
 }
 
-.header span {
-  font-size: 26px;
-  font-weight: bold;
-}
+.header span { font-size:26px; font-weight:bold; }
 
-.logo {
-  position: absolute;
-  left: 20px;
-  width: 120px;
-  cursor:pointer;
-}
+.logo { position:absolute; left:20px; width:120px; cursor:pointer; }
 
-.total-box{
-  margin-top:10px;
-  font-size:20px;
-  font-weight:bold;
-}
-
-/* GRID */
 .dashboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  padding: 30px;
+  display:flex; flex-wrap:wrap; justify-content:center;
+  gap:25px; padding:30px;
 }
 
-/* CARD */
 .card {
-  width: 250px;
-  min-height: 250px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  padding: 15px;
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  width:250px; min-height:250px;
+  background:#fff; border-radius:15px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.1);
+  padding:15px; cursor:pointer;
+  display:flex; flex-direction:column; justify-content:space-between;
 }
 
 .dark .card { background:#1e293b; }
 
-.card:hover {
-  transform: translateY(-5px);
-  background: #eef3ff;
-}
+.card:hover { transform:translateY(-5px); background:#eef3ff; }
 
-.card h3 {
-  margin: 0;
-  font-size: 18px;
-}
+.stats { display:flex; flex-direction:column; gap:10px; }
 
-/* STATS */
-.stats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.stat {
-  background: #f1f3f9;
-  padding: 10px;
-  border-radius: 8px;
-}
-
+.stat { background:#f1f3f9; padding:10px; border-radius:8px; }
 .dark .stat { background:#334155; }
 
-.stat span {
-  display: block;
-  font-weight: bold;
-  font-size: 18px;
-}
+.stat span { display:block; font-weight:bold; font-size:18px; }
 
-.today { border-left: 5px solid #4CAF50; }
-.yesterday { border-left: 5px solid #FF9800; }
-.total { border-left: 5px solid #2196F3; }
+.today { border-left:5px solid #4CAF50; }
+.yesterday { border-left:5px solid #FF9800; }
+.total { border-left:5px solid #2196F3; }
 
-/* SETTING */
 .setting-btn {
-  background: #2d3e50;
-  color: white;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 8px;
-  cursor: pointer;
+  background:#2d3e50; color:white;
+  padding:10px; margin-top:8px;
+  border-radius:8px; cursor:pointer;
 }
 
-/* POPUP */
 .popup {
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
+  display:none; position:fixed;
+  top:50%; left:50%;
   transform:translate(-50%,-50%);
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
+  background:#fff; padding:20px; border-radius:10px;
 }
 
 .dark .popup { background:#1e293b; }
@@ -169,43 +102,13 @@ body {
 </div>
 </div>
 
-<!-- RETURN REQUEST -->
-<div class="card">
+<!-- ✅ RETURN REQUEST FIXED -->
+<div class="card" onclick="openPage('return-request.html')">
 <h3>Return Request</h3>
 <div class="stats">
-<div class="stat today">Today <span>0</span></div>
-<div class="stat yesterday">Yesterday <span>0</span></div>
-<div class="stat total">Total <span>0</span></div>
-</div>
-</div>
-
-<!-- CUSTOMER -->
-<div class="card">
-<h3>Customer</h3>
-<div class="stats">
-<div class="stat today">Today <span>0</span></div>
-<div class="stat yesterday">Yesterday <span>0</span></div>
-<div class="stat total">Total <span>0</span></div>
-</div>
-</div>
-
-<!-- CUTTING -->
-<div class="card">
-<h3>Cutting</h3>
-<div class="stats">
-<div class="stat today">Today <span>0</span></div>
-<div class="stat yesterday">Yesterday <span>0</span></div>
-<div class="stat total">Total <span>0</span></div>
-</div>
-</div>
-
-<!-- FURNISHED -->
-<div class="card">
-<h3>Furnished</h3>
-<div class="stats">
-<div class="stat today">Today <span>0</span></div>
-<div class="stat yesterday">Yesterday <span>0</span></div>
-<div class="stat total">Total <span>0</span></div>
+<div class="stat today">Today <span id="rr_today">0</span></div>
+<div class="stat yesterday">Yesterday <span id="rr_yesterday">0</span></div>
+<div class="stat total">Total <span id="rr_total">0</span></div>
 </div>
 </div>
 
@@ -214,20 +117,16 @@ body {
 <h3>Settings</h3>
 
 <div class="setting-btn" onclick="openCalc()">Calculator</div>
-
 <div class="setting-btn" onclick="toggleMode()" id="modeBtn">Dark Mode</div>
-
 <div class="setting-btn" id="dateTime"></div>
-
 <div class="setting-btn" onclick="exportCSV()">Export Data</div>
-
 <div class="setting-btn" onclick="funny()" id="funBtn">Tik</div>
 
 </div>
 
 </div>
 
-<!-- CALCULATOR -->
+<!-- CALC -->
 <div class="popup" id="calcBox">
 <input type="text" id="calcInput">
 <br><br>
@@ -240,11 +139,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1
 
 function openPage(p){ location.href=p; }
 
-/* LOAD DATA */
+/* ================= LOAD MAIN STATS ================= */
 function loadDashboard(){
 fetch(API_URL+"?type=stats")
 .then(res=>res.json())
 .then(d=>{
+
 pickup_today.innerText=d.todayPickup;
 pickup_yesterday.innerText=d.yesterdayPickup;
 pickup_total.innerText=d.totalPickup;
@@ -254,11 +154,46 @@ return_yesterday.innerText=d.yesterdayReturn;
 return_total.innerText=d.totalReturn;
 
 let total=d.totalPickup+d.totalReturn;
-totalOrders.innerText=total;
 lookup_total.innerText=total;
+
 });
 }
+
+/* ================= RETURN REQUEST COUNT ================= */
+function loadReturnRequest(){
+
+fetch(API_URL+"?type=exchange")
+.then(res=>res.json())
+.then(data=>{
+
+let today=0;
+let yesterday=0;
+let total=data.length;
+
+let now = new Date();
+let yest = new Date();
+yest.setDate(now.getDate()-1);
+
+let todayStr = now.toISOString().split("T")[0];
+let yestStr = yest.toISOString().split("T")[0];
+
+data.forEach(r=>{
+let d = r.date;
+
+if(d === todayStr) today++;
+if(d === yestStr) yesterday++;
+});
+
+rr_today.innerText=today;
+rr_yesterday.innerText=yesterday;
+rr_total.innerText=total;
+
+});
+
+}
+
 loadDashboard();
+loadReturnRequest();
 
 /* CALC */
 function openCalc(){ calcBox.style.display="block"; }
