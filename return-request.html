@@ -6,84 +6,67 @@
 <title>Return Request</title>
 
 <style>
-body { font-family:'Segoe UI'; margin:0; background:#f4f6fb; }
+body { font-family:'Segoe UI'; margin:0; background:#f4f6fb; text-align:center; }
 
 .header {
   background:#2d3e50;
   color:#fff;
   padding:18px;
-  text-align:center;
   font-size:22px;
   font-weight:bold;
 }
 
 /* SEARCH */
-.search-box {
-  text-align:center;
-  margin:15px;
-}
+.search-box { margin:15px; }
 
 input {
-  width:85%;
-  max-width:350px;
-  padding:12px;
-  font-size:16px;
-  border-radius:10px;
+  width:220px;
+  padding:10px;
+  border-radius:6px;
   border:1px solid #ccc;
 }
 
-/* CARD */
-.list { padding:10px; }
-
-.card {
-  background:#fff;
-  margin:10px auto;
-  padding:12px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  max-width:400px;
-}
-
-.row { font-size:14px; margin:4px 0; }
-
-.title {
-  font-weight:bold;
-  font-size:16px;
-  color:#2d3e50;
-}
-
-/* STATUS */
-.tag {
-  padding:4px 10px;
-  border-radius:6px;
-  font-size:12px;
-  color:#fff;
-}
-
-.green { background:#4CAF50; }
-.orange { background:#FF9800; }
-
-/* BUTTONS */
-.btns { margin-top:8px; }
-
-.btn {
-  padding:6px 10px;
-  margin:3px;
+button {
+  padding:10px 12px;
+  margin:5px;
   border:none;
   border-radius:6px;
+  background:#2d3e50;
   color:#fff;
-  font-size:12px;
   cursor:pointer;
 }
 
-.pickup { background:#2196F3; }
-.exchange { background:#9C27B0; }
-.complete { background:#4CAF50; }
+/* TABLE */
+table {
+  width:98%;
+  margin:auto;
+  border-collapse:collapse;
+  background:#fff;
+}
 
-.no-data {
-  text-align:center;
-  margin-top:30px;
-  color:#888;
+th, td {
+  border:1px solid #ccc;
+  padding:6px;
+  font-size:12px;
+}
+
+th {
+  background:#2d3e50;
+  color:#fff;
+}
+
+/* PAGINATION */
+.pagination {
+  margin:15px;
+}
+
+.page-btn {
+  padding:6px 10px;
+  margin:3px;
+  border:none;
+  background:#2196F3;
+  color:#fff;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -93,128 +76,151 @@ input {
 <div class="header">Return Request</div>
 
 <div class="search-box">
-<input type="text" id="searchInput" placeholder="Search Order ID / Mobile">
+<input type="text" id="searchInput" placeholder="Order ID / Mobile">
+
+<button onclick="searchData()">Search</button>
+<button onclick="clearSearch()">Clear</button>
+<button onclick="loadData()">Load Data</button>
+<button onclick="goBack()">Back</button>
 </div>
 
-<div class="list" id="list"></div>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Request ID</th>
+<th>Name</th>
+<th>Order ID</th>
+<th>Mobile</th>
+<th>Email</th>
+<th>Return</th>
+<th>Exchange</th>
+<th>UPI/Bank</th>
+<th>Return Product</th>
+<th>Exchange Product</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<div class="pagination" id="pagination"></div>
 
 <script>
 
 const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
 let fullData = [];
+let filteredData = [];
+let currentPage = 1;
+const rowsPerPage = 25;
 
 /* LOAD DATA */
 function loadData(){
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
 .then(data=>{
-  fullData = data.reverse();
-  render(fullData);
+  fullData = data.reverse(); // latest first
+  filteredData = [...fullData];
+  currentPage = 1;
+  renderTable();
 });
 }
 
-/* RENDER */
-function render(data){
+/* RENDER TABLE */
+function renderTable(){
 
-let container = document.getElementById("list");
-container.innerHTML="";
+let tbody = document.getElementById("tableBody");
+tbody.innerHTML="";
 
-if(data.length === 0){
-  container.innerHTML = `<div class="no-data">No Data Found</div>`;
-  return;
-}
+let start = (currentPage-1)*rowsPerPage;
+let end = start + rowsPerPage;
 
-data.forEach(r=>{
+let pageData = filteredData.slice(start,end);
 
-let statusColor = r.description === "Completed" ? "green" : "orange";
-let statusText = r.description === "Completed" ? "Completed" : "Pending";
+pageData.forEach(r=>{
 
-let card = document.createElement("div");
-card.className="card";
+let tr = document.createElement("tr");
 
-card.innerHTML = `
-<div class="title">${r.name || "-"}</div>
-
-<div class="row">📦 Order: ${r.order_id}</div>
-<div class="row">📱 Mobile: ${r.mobile}</div>
-<div class="row">📅 Date: ${r.date}</div>
-
-<div class="row">
-<span class="tag ${statusColor}">${statusText}</span>
-</div>
-
-<div class="row">🔁 Return: ${r.return_product}</div>
-<div class="row">🔄 Exchange: ${r.exchange_product}</div>
-
-<div class="btns">
-<button class="btn pickup" onclick="update('${r.order_id}','pickup')">Pickup</button>
-<button class="btn exchange" onclick="update('${r.order_id}','exchange')">Exchange</button>
-<button class="btn complete" onclick="complete('${r.order_id}')">Complete</button>
-</div>
+tr.innerHTML = `
+<td>${r.date}</td>
+<td>${r.request_id}</td>
+<td>${r.name}</td>
+<td>${r.order_id}</td>
+<td>${r.mobile}</td>
+<td>${r.email}</td>
+<td>${r.return}</td>
+<td>${r.exchange}</td>
+<td>${r.upi_bank}</td>
+<td>${r.return_product}</td>
+<td>${r.exchange_product}</td>
+<td>${r.description}</td>
 `;
 
-container.appendChild(card);
+tbody.appendChild(tr);
 
 });
+
+renderPagination();
 
 }
 
-/* UPDATE */
-function update(orderId, field){
+/* PAGINATION */
+function renderPagination(){
 
-fetch(API_URL,{
-method:"POST",
-body:JSON.stringify({
-action:"updateExchange",
-order_id:orderId,
-field:field
-})
-})
-.then(res=>res.json())
-.then(()=>{
-loadData();
-});
+let pageCount = Math.ceil(filteredData.length / rowsPerPage);
+let container = document.getElementById("pagination");
 
+container.innerHTML="";
+
+for(let i=1;i<=pageCount;i++){
+let btn = document.createElement("button");
+btn.innerText = i;
+btn.className = "page-btn";
+
+btn.onclick = ()=>{
+  currentPage = i;
+  renderTable();
+};
+
+container.appendChild(btn);
 }
-
-/* COMPLETE */
-function complete(orderId){
-
-fetch(API_URL,{
-method:"POST",
-body:JSON.stringify({
-action:"completeExchange",
-order_id:orderId
-})
-})
-.then(res=>res.json())
-.then(()=>{
-loadData();
-});
 
 }
 
 /* SEARCH */
-searchInput.addEventListener("input", ()=>{
+function searchData(){
 
 let val = searchInput.value.toLowerCase().trim();
 
 if(!val){
-  render(fullData);
-  return;
+  filteredData = [...fullData];
+} else {
+  filteredData = fullData.filter(r =>
+    String(r.order_id).toLowerCase().includes(val) ||
+    String(r.mobile).toLowerCase().includes(val)
+  );
 }
 
-let filtered = fullData.filter(r =>
-  String(r.order_id).toLowerCase().includes(val) ||
-  String(r.mobile).toLowerCase().includes(val)
-);
+currentPage = 1;
+renderTable();
 
-render(filtered);
+}
 
-});
+/* CLEAR */
+function clearSearch(){
+searchInput.value="";
+filteredData = [...fullData];
+currentPage = 1;
+renderTable();
+}
 
-/* INIT */
+/* BACK */
+function goBack(){
+window.location.href="index.html";
+}
+
+/* AUTO LOAD */
 loadData();
 
 </script>
