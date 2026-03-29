@@ -170,24 +170,35 @@ let today=0;
 let yesterday=0;
 let total=data.length;
 
+// ✅ India timezone fix
+function getLocalDateStr(d){
+return d.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); 
+// format: yyyy-MM-dd
+}
+
 let now = new Date();
 let yest = new Date();
 yest.setDate(now.getDate()-1);
 
-let todayStr = now.toISOString().split("T")[0];
-let yestStr = yest.toISOString().split("T")[0];
+let todayStr = getLocalDateStr(now);
+let yestStr = getLocalDateStr(yest);
 
 data.forEach(r=>{
-let d = r.date;
 
-if(d === todayStr) today++;
-if(d === yestStr) yesterday++;
+let rowDate = (r.date || "").trim();
+
+if(rowDate === todayStr) today++;
+if(rowDate === yestStr) yesterday++;
+
 });
 
-rr_today.innerText=today;
-rr_yesterday.innerText=yesterday;
-rr_total.innerText=total;
+rr_today.innerText = today;
+rr_yesterday.innerText = yesterday;
+rr_total.innerText = total;
 
+})
+.catch(err=>{
+console.log("Return Count Error:", err);
 });
 
 }
