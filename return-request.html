@@ -127,42 +127,46 @@ fetch(API_URL+"?type=exchange")
 });
 }
 
-/* RENDER TABLE */
 function renderTable(){
 
-let tbody = document.getElementById("tableBody");
-tbody.innerHTML="";
+  let tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
 
-let start = (currentPage-1)*rowsPerPage;
-let end = start + rowsPerPage;
+  let start = (currentPage - 1) * rowsPerPage;
+  let end = start + rowsPerPage;
 
-let pageData = filteredData.slice(start,end);
+  // ✅ ONLY CURRENT PAGE DATA
+  let pageData = data.slice(start, end);
 
-pageData.forEach(r=>{
+  let html = "";
 
-let tr = document.createElement("tr");
+  pageData.forEach(item => {
 
-tr.innerHTML = `
-<td>${r.date || ""}</td>
-<td>${r.request_id || ""}</td>
-<td>${r.name || ""}</td>
-<td>${r.order_id || ""}</td>
-<td>${r.mobile || ""}</td>
-<td>${r.email || ""}</td>
-<td>${r.return || ""}</td>
-<td>${r.exchange || ""}</td>
-<td>${r.upi_bank || ""}</td>
-<td>${r.return_product || ""}</td>
-<td>${r.exchange_product || ""}</td>
-<td>${r.description || ""}</td>
-`;
+    // ✅ Skip invalid rows (extra safety)
+    if (!item.order_id) return;
 
-tbody.appendChild(tr);
+    html += `
+      <tr>
+        <td>${item.date || ""}</td>
+        <td>${item.request_id || ""}</td>
+        <td>${item.name || ""}</td>
+        <td>${item.order_id || ""}</td>
+        <td>${item.mobile || ""}</td>
+        <td>${item.email || ""}</td>
+        <td>${item.return || ""}</td>
+        <td>${item.exchange || ""}</td>
+        <td>${item.upi_bank || ""}</td>
+        <td>${item.return_product || ""}</td>
+        <td>${item.exchange_product || ""}</td>
+        <td>${item.description || ""}</td>
+      </tr>
+    `;
+  });
 
-});
+  // ✅ Single DOM update (fast + correct)
+  tbody.innerHTML = html;
 
-renderPagination();
-
+  renderPagination();
 }
 
 /* PAGINATION */
