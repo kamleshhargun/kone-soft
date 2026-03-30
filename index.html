@@ -248,20 +248,18 @@ announcementText.innerText="❌ API Error";
 
 /* ORDER LOOKUP */
 function loadOrderLookup(){
-fetch(API_URL)
-.then(res=>res.text())
-.then(t=>{
-let data=JSON.parse(t);
-lookup_total.innerText=data.length;
+fetch(API_URL + "?type=lookup")
+.then(res=>res.json())
+.then(data=>{
+lookup_total.innerText = data.length || 0;
 });
 }
 
 /* RETURN REQUEST */
 function loadReturnRequest(){
-fetch(API_URL)
-.then(res=>res.text())
-.then(t=>{
-let data=JSON.parse(t);
+fetch(API_URL + "?type=exchange")
+.then(res=>res.json())
+.then(data=>{
 
 let today=0,yesterday=0,total=data.length;
 let now=new Date();
