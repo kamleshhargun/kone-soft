@@ -6,38 +6,75 @@
 <title>Dashboard</title>
 
 <style>
-body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:center; transition:0.3s; }
+body {
+  font-family:'Segoe UI', Arial;
+  margin:0;
+  background:#f4f6fb;
+  text-align:center;
+  transition:0.3s;
+}
 .dark { background:#0f172a; color:#fff; }
 
+/* HEADER */
 .header {
-  background:#2d3e50; color:#fff; height:70px;
-  display:flex; align-items:center; justify-content:center;
+  background:#2d3e50;
+  color:#fff;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   position:relative;
 }
-
 .header span { font-size:26px; font-weight:bold; }
-
 .logo { position:absolute; left:20px; width:120px; cursor:pointer; }
 
+/* 🔥 ANNOUNCEMENT */
+.announcement-bar {
+  width:100%;
+  background: linear-gradient(90deg,#2d3e50,#4f46e5);
+  color:#fff;
+  padding:10px 0;
+  font-weight:bold;
+  overflow:hidden;
+}
+.announcement-text {
+  display:inline-block;
+  white-space:nowrap;
+  animation: scrollText 15s linear infinite;
+}
+@keyframes scrollText {
+  0% { transform:translateX(100%); }
+  100% { transform:translateX(-100%); }
+}
+.dark .announcement-bar {
+  background: linear-gradient(90deg,#020617,#1e293b);
+}
+
+/* DASHBOARD */
 .dashboard {
-  display:flex; flex-wrap:wrap; justify-content:center;
-  gap:25px; padding:30px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:25px;
+  padding:30px;
 }
 
 .card {
-  width:250px; min-height:250px;
-  background:#fff; border-radius:15px;
+  width:250px;
+  min-height:250px;
+  background:#fff;
+  border-radius:15px;
   box-shadow:0 6px 15px rgba(0,0,0,0.1);
-  padding:15px; cursor:pointer;
-  display:flex; flex-direction:column; justify-content:space-between;
+  padding:15px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
-
 .dark .card { background:#1e293b; }
-
-.card:hover { transform:translateY(-5px); background:#eef3ff; }
+.card:hover { transform:translateY(-5px); }
 
 .stats { display:flex; flex-direction:column; gap:10px; }
-
 .stat { background:#f1f3f9; padding:10px; border-radius:8px; }
 .dark .stat { background:#334155; }
 
@@ -47,20 +84,62 @@ body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:c
 .yesterday { border-left:5px solid #FF9800; }
 .total { border-left:5px solid #2196F3; }
 
+/* SETTINGS */
 .setting-btn {
-  background:#2d3e50; color:white;
-  padding:10px; margin-top:8px;
-  border-radius:8px; cursor:pointer;
+  background:#2d3e50;
+  color:white;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-.popup {
-  display:none; position:fixed;
-  top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  background:#fff; padding:20px; border-radius:10px;
+/* 🧮 CALCULATOR */
+.calc-container {
+  display:none;
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:260px;
+  background:#1e293b;
+  border-radius:15px;
+  padding:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+.calc-display {
+  width:100%;
+  height:50px;
+  font-size:20px;
+  margin-bottom:10px;
+  border:none;
+  text-align:right;
+  padding:10px;
+  border-radius:8px;
+}
+.calc-buttons {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.calc-buttons button {
+  padding:12px;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-.dark .popup { background:#1e293b; }
+/* ⏰ DATE TIME */
+.datetime-box {
+  background:#111827;
+  color:#fff;
+  padding:10px;
+  border-radius:10px;
+  font-size:14px;
+}
+.dark .datetime-box {
+  background:#020617;
+}
 
 </style>
 </head>
@@ -70,6 +149,11 @@ body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:c
 <div class="header">
   <img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo" onclick="location.reload()">
   <span>Harsidhi Ventures</span>
+</div>
+
+<!-- 🔥 ANNOUNCEMENT -->
+<div class="announcement-bar">
+  <div class="announcement-text" id="announcementText">Loading...</div>
 </div>
 
 <div class="dashboard">
@@ -94,52 +178,55 @@ body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:c
 </div>
 </div>
 
-<!-- LOOKUP -->
-<div class="card" onclick="openPage('lookup.html')">
-<h3>Order Lookup</h3>
-<div class="stats">
-<div class="stat total">Orders <span id="lookup_total">0</span></div>
-</div>
-</div>
-
-<!-- ✅ RETURN REQUEST FIXED -->
-<div class="card" onclick="openPage('return-request.html')">
-<h3>Return Request</h3>
-<div class="stats">
-<div class="stat today">Today <span id="rr_today">0</span></div>
-<div class="stat yesterday">Yesterday <span id="rr_yesterday">0</span></div>
-<div class="stat total">Total <span id="rr_total">0</span></div>
-</div>
-</div>
-
 <!-- SETTINGS -->
 <div class="card">
 <h3>Settings</h3>
 
-<div class="setting-btn" onclick="openCalc()">Calculator</div>
+<div class="setting-btn" onclick="toggleCalc()">Calculator</div>
 <div class="setting-btn" onclick="toggleMode()" id="modeBtn">Dark Mode</div>
-<div class="setting-btn" id="dateTime"></div>
-<div class="setting-btn" onclick="exportCSV()">Export Data</div>
-<div class="setting-btn" onclick="funny()" id="funBtn">Tik</div>
+
+<div class="datetime-box" id="dateTime"></div>
 
 </div>
 
 </div>
 
-<!-- CALC -->
-<div class="popup" id="calcBox">
-<input type="text" id="calcInput">
-<br><br>
+<!-- 🧮 CALCULATOR -->
+<div class="calc-container" id="calcBox">
+<input type="text" id="calcInput" class="calc-display" disabled>
+
+<div class="calc-buttons">
+<button onclick="press('7')">7</button>
+<button onclick="press('8')">8</button>
+<button onclick="press('9')">9</button>
+<button onclick="press('/')">÷</button>
+
+<button onclick="press('4')">4</button>
+<button onclick="press('5')">5</button>
+<button onclick="press('6')">6</button>
+<button onclick="press('*')">×</button>
+
+<button onclick="press('1')">1</button>
+<button onclick="press('2')">2</button>
+<button onclick="press('3')">3</button>
+<button onclick="press('-')">-</button>
+
+<button onclick="press('0')">0</button>
+<button onclick="press('.')">.</button>
 <button onclick="calculate()">=</button>
+<button onclick="press('+')">+</button>
+
+<button onclick="clearCalc()" style="grid-column:span 4;background:#ef4444;color:#fff;">Clear</button>
+</div>
 </div>
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec";
 
 function openPage(p){ location.href=p; }
 
-/* ================= LOAD MAIN STATS ================= */
+/* LOAD DATA */
 function loadDashboard(){
 fetch(API_URL+"?type=stats")
 .then(res=>res.json())
@@ -153,94 +240,33 @@ return_today.innerText=d.todayReturn;
 return_yesterday.innerText=d.yesterdayReturn;
 return_total.innerText=d.totalReturn;
 
-let total=d.totalPickup+d.totalReturn;
-lookup_total.innerText=total;
+/* 🔥 ANNOUNCEMENT */
+announcementText.innerText =
+`🚚 Pickup: ${d.todayPickup} | ${d.yesterdayPickup} | ${d.totalPickup}  🔁 Return: ${d.todayReturn} | ${d.yesterdayReturn} | ${d.totalReturn}`;
 
 });
 }
-
-/* ================= RETURN REQUEST COUNT ================= */
-function loadReturnRequest(){
-
-fetch(API_URL+"?type=exchange")
-.then(res=>res.json())
-.then(data=>{
-
-let today=0;
-let yesterday=0;
-let total=data.length;
-
-// ✅ India timezone fix
-function getLocalDateStr(d){
-return d.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); 
-// format: yyyy-MM-dd
-}
-
-let now = new Date();
-let yest = new Date();
-yest.setDate(now.getDate()-1);
-
-let todayStr = getLocalDateStr(now);
-let yestStr = getLocalDateStr(yest);
-
-data.forEach(r=>{
-
-let rowDate = (r.date || "").trim();
-
-if(rowDate === todayStr) today++;
-if(rowDate === yestStr) yesterday++;
-
-});
-
-rr_today.innerText = today;
-rr_yesterday.innerText = yesterday;
-rr_total.innerText = total;
-
-})
-.catch(err=>{
-console.log("Return Count Error:", err);
-});
-
-}
-
 loadDashboard();
-loadReturnRequest();
 
-/* CALC */
-function openCalc(){ calcBox.style.display="block"; }
-window.onclick=e=>{ if(e.target==calcBox) calcBox.style.display="none"; }
+/* 🧮 CALC */
+function toggleCalc(){
+calcBox.style.display = calcBox.style.display==="block"?"none":"block";
+}
+function press(v){ calcInput.value+=v; }
 function calculate(){ calcInput.value=eval(calcInput.value); }
+function clearCalc(){ calcInput.value=""; }
 
-/* DARK MODE */
+/* 🌙 DARK MODE */
 function toggleMode(){
 document.body.classList.toggle("dark");
 modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
 }
 
-/* TIME */
+/* ⏰ TIME */
 setInterval(()=>{
-dateTime.innerText=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
+dateTime.innerHTML =
+`📅 ${new Date().toLocaleDateString("en-IN")} <br> ⏰ ${new Date().toLocaleTimeString("en-IN")}`;
 },1000);
-
-/* EXPORT */
-function exportCSV(){
-fetch(API_URL+"?type=exchange")
-.then(res=>res.json())
-.then(data=>{
-let csv="data\n";
-data.forEach(r=>{ csv+=JSON.stringify(r)+"\n"; });
-let blob=new Blob([csv]);
-let a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="data.csv";
-a.click();
-});
-}
-
-/* FUN */
-function funny(){
-funBtn.innerText = funBtn.innerText==="Tik" ? "Tok" : "Tik";
-}
 
 </script>
 
