@@ -65,11 +65,20 @@ body{
 
 .stat span{ font-weight:bold; }
 
-.center-card{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:18px;
+/* CLOCK */
+.clock{
+  text-align:center;
+}
+
+.time{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.date{
+  font-size:14px;
+  margin-top:5px;
+  opacity:0.8;
 }
 
 .light .card{
@@ -144,11 +153,16 @@ body{
 </div>
 </div>
 
-<!-- DATE -->
-<div class="card center-card" id="dateTimeCard">Loading...</div>
+<!-- CLOCK -->
+<div class="card clock">
+<div class="time" id="time">00:00:00</div>
+<div class="date" id="date">Loading...</div>
+</div>
 
 <!-- MODE -->
-<div class="card center-card" onclick="toggleMode()" id="modeCard">Light Mode</div>
+<div class="card clock" onclick="toggleMode()" id="modeCard">
+Light Mode
+</div>
 
 </div>
 
@@ -164,34 +178,31 @@ fetch(API_URL+"?type=stats")
 .then(res=>res.json())
 .then(d=>{
 
-// PICKUP
+// ✅ PICKUP
 pickup_today.innerText=d.todayPickup||0;
 pickup_yesterday.innerText=d.yesterdayPickup||0;
 pickup_total.innerText=d.totalPickup||0;
 
-// RETURN
+// ✅ RETURN
 return_today.innerText=d.todayReturn||0;
 return_yesterday.innerText=d.yesterdayReturn||0;
 return_total.innerText=d.totalReturn||0;
 
-// CUSTOMER CUTTING
-cutting_today.innerText=d.todayCutting||0;
-cutting_yesterday.innerText=d.yesterdayCutting||0;
-cutting_total.innerText=d.totalCutting||0;
+// ❌ बाकी FIX (no data pick)
+cutting_today.innerText=0;
+cutting_yesterday.innerText=0;
+cutting_total.innerText=0;
 
-// FURNISHED
-furnished_today.innerText=d.todayFurnished||0;
-furnished_yesterday.innerText=d.yesterdayFurnished||0;
-furnished_total.innerText=d.totalFurnished||0;
+furnished_today.innerText=0;
+furnished_yesterday.innerText=0;
+furnished_total.innerText=0;
 
-// SEARCH TOTAL
+// ✅ SEARCH TOTAL (only pickup+return)
 lookup_total.innerText=
-(d.totalPickup||0)+
-(d.totalReturn||0)+
-(d.totalCutting||0)+
-(d.totalFurnished||0);
+(d.totalPickup||0)+(d.totalReturn||0);
 
-});
+})
+.catch(()=>console.log("API Error"));
 }
 
 /* RETURN REQUEST */
@@ -233,9 +244,18 @@ loadReturnRequest();
 loadAll();
 setInterval(loadAll,5000);
 
-/* DATE */
+/* CLOCK */
 setInterval(()=>{
-dateTimeCard.innerText=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
+let now=new Date();
+
+time.innerText=now.toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata"});
+date.innerText=now.toLocaleDateString("en-IN",{
+weekday:"short",
+day:"numeric",
+month:"short",
+year:"numeric"
+});
+
 },1000);
 
 /* MODE */
