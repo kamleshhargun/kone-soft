@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KONE-SOFT</title>
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png">
 <style>
 body {
   font-family:'Segoe UI', Arial;
   margin:0;
-  background:#f4f6fb;
+  background:#eef2f7;
   text-align:center;
   transition:0.3s;
 }
@@ -17,29 +17,31 @@ body {
 
 /* HEADER */
 .header {
-  background:#2d3e50;
+  background:linear-gradient(90deg,#2d3e50,#4f46e5);
   color:#fff;
   height:70px;
   display:flex;
   align-items:center;
   justify-content:center;
   position:relative;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
-.header span { font-size:26px; font-weight:bold; }
-.logo { position:absolute; left:20px; width:120px; cursor:pointer; }
+.header span { font-size:26px; font-weight:bold; letter-spacing:1px; }
+.logo { position:absolute; left:15px; width:110px; cursor:pointer; }
 
 /* ANNOUNCEMENT */
 .announcement-bar {
   width:100%;
-  background: linear-gradient(90deg,#2d3e50,#4f46e5);
+  background:#111827;
   color:#fff;
-  padding:10px 0;
+  padding:8px 0;
   overflow:hidden;
 }
 .announcement-text {
   display:inline-block;
   white-space:nowrap;
-  animation: scrollText 15s linear infinite;
+  animation: scrollText 18s linear infinite;
+  font-size:14px;
 }
 @keyframes scrollText {
   0% { transform:translateX(100%); }
@@ -52,42 +54,76 @@ body {
   flex-wrap:wrap;
   justify-content:center;
   gap:25px;
-  padding:30px;
+  padding:25px;
 }
 
+/* CARD */
 .card {
-  width:250px;
-  min-height:250px;
+  width:260px;
+  min-height:260px;
   background:#fff;
-  border-radius:15px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.1);
-  padding:15px;
+  border-radius:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  padding:18px;
   cursor:pointer;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+  transition:0.3s;
+  position:relative;
 }
+
+.card:hover {
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:0 12px 25px rgba(0,0,0,0.15);
+}
+
 .dark .card { background:#1e293b; }
 
-.stats { display:flex; flex-direction:column; gap:10px; }
-.stat { background:#f1f3f9; padding:10px; border-radius:8px; }
+/* CARD TITLE */
+.card h3 {
+  margin:0;
+  font-size:20px;
+  color:#4f46e5;
+}
+
+/* STATS */
+.stats { display:flex; flex-direction:column; gap:12px; }
+
+.stat {
+  background:#f1f5f9;
+  padding:10px;
+  border-radius:10px;
+  font-size:14px;
+  transition:0.2s;
+}
+.stat:hover { transform:scale(1.02); }
+
 .dark .stat { background:#334155; }
 
-.stat span { display:block; font-weight:bold; font-size:18px; }
+.stat span {
+  display:block;
+  font-weight:bold;
+  font-size:20px;
+  margin-top:5px;
+}
 
-.today { border-left:5px solid #4CAF50; }
-.yesterday { border-left:5px solid #FF9800; }
-.total { border-left:5px solid #2196F3; }
+/* COLORS */
+.today { border-left:5px solid #22c55e; }
+.yesterday { border-left:5px solid #f59e0b; }
+.total { border-left:5px solid #3b82f6; }
 
 /* SETTINGS */
 .setting-btn {
-  background:#2d3e50;
+  background:#4f46e5;
   color:white;
   padding:10px;
   margin-top:8px;
   border-radius:8px;
   cursor:pointer;
+  transition:0.2s;
 }
+.setting-btn:hover { background:#4338ca; }
 
 /* CALCULATOR */
 .calc-container {
@@ -99,6 +135,7 @@ body {
   background:#1e293b;
   border-radius:15px;
   padding:15px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.4);
 }
 .calc-display {
   width:100%;
@@ -114,6 +151,9 @@ body {
 }
 .calc-buttons button {
   padding:10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
 
 /* DATE TIME */
@@ -125,6 +165,10 @@ body {
   font-size:14px;
 }
 
+/* MOBILE */
+@media(max-width:600px){
+  .card { width:90%; }
+}
 </style>
 </head>
 
@@ -143,7 +187,7 @@ body {
 
 <!-- PICKUP -->
 <div class="card" onclick="openPage('pickup.html')">
-<h3>Pickup</h3>
+<h3>🚚 Pickup</h3>
 <div class="stats">
 <div class="stat today">Today <span id="pickup_today">0</span></div>
 <div class="stat yesterday">Yesterday <span id="pickup_yesterday">0</span></div>
@@ -153,7 +197,7 @@ body {
 
 <!-- RETURN -->
 <div class="card" onclick="openPage('return.html')">
-<h3>Return</h3>
+<h3>🔁 Return</h3>
 <div class="stats">
 <div class="stat today">Today <span id="return_today">0</span></div>
 <div class="stat yesterday">Yesterday <span id="return_yesterday">0</span></div>
@@ -163,7 +207,7 @@ body {
 
 <!-- LOOKUP -->
 <div class="card" onclick="openPage('lookup.html')">
-<h3>Order Lookup</h3>
+<h3>🔍 Order Lookup</h3>
 <div class="stats">
 <div class="stat total">Orders <span id="lookup_total">0</span></div>
 </div>
@@ -171,7 +215,7 @@ body {
 
 <!-- RETURN REQUEST -->
 <div class="card" onclick="openPage('return-request.html')">
-<h3>Return Request</h3>
+<h3>📦 Return Request</h3>
 <div class="stats">
 <div class="stat today">Today <span id="rr_today">0</span></div>
 <div class="stat yesterday">Yesterday <span id="rr_yesterday">0</span></div>
@@ -181,7 +225,7 @@ body {
 
 <!-- SETTINGS -->
 <div class="card">
-<h3>Settings</h3>
+<h3>⚙️ Settings</h3>
 
 <div class="setting-btn" onclick="toggleCalc()">Calculator</div>
 <div class="setting-btn" onclick="toggleMode()" id="modeBtn">Dark Mode</div>
@@ -193,162 +237,59 @@ body {
 
 </div>
 
-<!-- CALCULATOR -->
-<div class="calc-container" id="calcBox">
-<input type="text" id="calcInput" class="calc-display" disabled>
-<div class="calc-buttons">
-<button onclick="press('7')">7</button>
-<button onclick="press('8')">8</button>
-<button onclick="press('9')">9</button>
-<button onclick="press('/')">÷</button>
-<button onclick="press('4')">4</button>
-<button onclick="press('5')">5</button>
-<button onclick="press('6')">6</button>
-<button onclick="press('*')">×</button>
-<button onclick="press('1')">1</button>
-<button onclick="press('2')">2</button>
-<button onclick="press('3')">3</button>
-<button onclick="press('-')">-</button>
-<button onclick="press('0')">0</button>
-<button onclick="press('.')">.</button>
-<button onclick="calculate()">=</button>
-<button onclick="press('+')">+</button>
-<button onclick="clearCalc()" style="grid-column:span 4;background:red;color:#fff;">Clear</button>
-</div>
-</div>
-
 <script>
 
 const API_URL="https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec";
 
 function openPage(p){ location.href=p; }
 
-/* LOAD DASHBOARD */
-function loadDashboard(){
-fetch(API_URL+"?type=stats")
-.then(res=>res.json())
-.then(d=>{
-
-pickup_today.innerText=d.todayPickup;
-pickup_yesterday.innerText=d.yesterdayPickup;
-pickup_total.innerText=d.totalPickup;
-
-return_today.innerText=d.todayReturn;
-return_yesterday.innerText=d.yesterdayReturn;
-return_total.innerText=d.totalReturn;
-
-lookup_total.innerText = d.totalPickup + d.totalReturn;
-
-/* ANNOUNCEMENT */
-announcementText.innerText =
-`🚚 Pickup: ${d.todayPickup} | ${d.yesterdayPickup} | ${d.totalPickup}   🔁 Return: ${d.todayReturn} | ${d.yesterdayReturn} | ${d.totalReturn}`;
-
-});
-}
 /* ORDER LOOKUP */
 function loadOrderLookup(){
-
 fetch(API_URL)
 .then(res=>res.text())
 .then(text=>{
-
   let data = JSON.parse(text);
-
-  // ✅ total orders count
-  let totalOrders = data.length;
-
-  document.getElementById("lookup_total").innerText = totalOrders;
-
-})
-.catch(err=>{
-  console.error(err);
+  document.getElementById("lookup_total").innerText = data.length;
 });
 }
+
 /* RETURN REQUEST */
 function loadReturnRequest(){
-
 fetch(API_URL)
 .then(res=>res.text())
 .then(text=>{
-
   let data = JSON.parse(text);
 
-  let today = 0;
-  let yesterday = 0;
-  let total = data.length;
+  let today=0,yesterday=0,total=data.length;
+  let now=new Date();
+  let yest=new Date(); yest.setDate(now.getDate()-1);
 
-  let now = new Date();
-  let yest = new Date();
-  yest.setDate(now.getDate() - 1);
-
-  // ✅ format: YYYY-MM-DD
-  let todayStr = now.toISOString().split("T")[0];
-  let yestStr = yest.toISOString().split("T")[0];
+  let t=now.toISOString().split("T")[0];
+  let y=yest.toISOString().split("T")[0];
 
   data.forEach(r=>{
-
-    if(!r.date) return;
-
-    let rowDate = new Date(r.date).toISOString().split("T")[0];
-
-    if(rowDate === todayStr) today++;
-    if(rowDate === yestStr) yesterday++;
-
+    let d=new Date(r.date).toISOString().split("T")[0];
+    if(d===t) today++;
+    if(d===y) yesterday++;
   });
 
-  // ✅ set values
-  document.getElementById("rr_today").innerText = today;
-  document.getElementById("rr_yesterday").innerText = yesterday;
-  document.getElementById("rr_total").innerText = total;
+  rr_today.innerText=today;
+  rr_yesterday.innerText=yesterday;
+  rr_total.innerText=total;
 
-})
-.catch(err=>{
-  console.error(err);
+  announcementText.innerText =
+  `📦 Return Request → Today: ${today} | Yesterday: ${yesterday} | Total: ${total}`;
 });
 }
 
-loadDashboard();
+loadOrderLookup();
 loadReturnRequest();
-
-/* CALC */
-function toggleCalc(){
-calcBox.style.display = calcBox.style.display==="block"?"none":"block";
-}
-function press(v){ calcInput.value+=v; }
-function calculate(){ calcInput.value=eval(calcInput.value); }
-function clearCalc(){ calcInput.value=""; }
-
-/* DARK MODE */
-function toggleMode(){
-document.body.classList.toggle("dark");
-modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
-}
 
 /* TIME */
 setInterval(()=>{
 dateTime.innerHTML =
 `📅 ${new Date().toLocaleDateString("en-IN")} <br> ⏰ ${new Date().toLocaleTimeString("en-IN")}`;
 },1000);
-
-/* EXPORT */
-function exportCSV(){
-fetch(API_URL+"?type=exchange")
-.then(res=>res.json())
-.then(data=>{
-let csv="data\n";
-data.forEach(r=>{ csv+=JSON.stringify(r)+"\n"; });
-let blob=new Blob([csv]);
-let a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="data.csv";
-a.click();
-});
-}
-
-/* FUN */
-function funny(){
-funBtn.innerText = funBtn.innerText==="Tik" ? "Tok" : "Tik";
-}
 
 </script>
 
