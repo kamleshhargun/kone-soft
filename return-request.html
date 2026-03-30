@@ -70,6 +70,14 @@ th {
   color:red;
   font-weight:bold;
 }
+
+#statusBox {
+  margin:10px;
+  font-weight:bold;
+  padding:8px;
+  border-radius:6px;
+  display:none;
+}
 </style>
 </head>
 
@@ -85,6 +93,8 @@ th {
 <button onclick="loadData()">Load Data</button>
 <button onclick="goBack()">Back</button>
 </div>
+
+<div id="statusBox"></div>
 
 <table id="dataTable">
 <thead>
@@ -111,29 +121,59 @@ th {
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec"; // 🔥 yaha apna URL dalna
+const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1Rl43E_Yfmiq22_LWn6gIWBtzOSkssef4auS7IR0DyEBV/exec"; // 🔥 change karo
 
 let fullData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 25;
 
-/* LOAD DATA */
-function loadData(){
-fetch(API_URL)
-.then(res=>res.json())
-.then(data=>{
-
-  fullData = data.reverse();
-  filteredData = [...fullData];
-  currentPage = 1;
-
-  renderTable();
-
-});
+/* STATUS */
+function showStatus(message, color){
+  let box = document.getElementById("statusBox");
+  box.style.display = "block";
+  box.style.background = color;
+  box.style.color = "#fff";
+  box.innerText = message;
 }
 
-/* RENDER TABLE */
+/* LOAD DATA */
+function loadData(){
+
+  showStatus("🔄 Loading data...", "#2196F3");
+
+  fetch(API_URL)
+  .then(res=>res.json())
+  .then(data=>{
+
+    console.log("API DATA:", data);
+
+    if(!data || data.length === 0){
+      showStatus("⚠️ No Data Found", "#ff9800");
+
+      fullData = [];
+      filteredData = [];
+      renderTable();
+      return;
+    }
+
+    showStatus("✅ Data Loaded (" + data.length + " records)", "#4CAF50");
+
+    fullData = data.reverse();
+    filteredData = [...fullData];
+    currentPage = 1;
+
+    renderTable();
+
+  })
+  .catch(err=>{
+    console.error(err);
+    showStatus("❌ API Error", "#f44336");
+  });
+
+}
+
+/* TABLE */
 function renderTable(){
 
   let tbody = document.getElementById("tableBody");
@@ -152,7 +192,7 @@ function renderTable(){
   msg.innerText = "";
 
   let start = (currentPage - 1) * rowsPerPage;
-  let end = start + rowsPerPage; // ✅ FIX
+  let end = start + rowsPerPage;
 
   let pageData = filteredData.slice(start, end);
 
@@ -224,6 +264,8 @@ if(!val){
 currentPage = 1;
 renderTable();
 
+showStatus("🔍 Found: " + filteredData.length + " records", "#673ab7");
+
 }
 
 /* CLEAR */
@@ -232,6 +274,7 @@ document.getElementById("searchInput").value="";
 filteredData = [...fullData];
 currentPage = 1;
 renderTable();
+showStatus("🔄 Data Reset", "#607d8b");
 }
 
 /* BACK */
