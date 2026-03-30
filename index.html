@@ -245,7 +245,25 @@ announcementText.innerText =
 
 });
 }
+/* ORDER LOOKUP */
+function loadOrderLookup(){
 
+fetch(API_URL)
+.then(res=>res.text())
+.then(text=>{
+
+  let data = JSON.parse(text);
+
+  // ✅ total orders count
+  let totalOrders = data.length;
+
+  document.getElementById("lookup_total").innerText = totalOrders;
+
+})
+.catch(err=>{
+  console.error(err);
+});
+}
 /* RETURN REQUEST */
 function loadReturnRequest(){
 
