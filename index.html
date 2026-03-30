@@ -248,25 +248,44 @@ announcementText.innerText =
 
 /* RETURN REQUEST */
 function loadReturnRequest(){
-fetch(API_URL+"?type=exchange")
-.then(res=>res.json())
-.then(data=>{
-let today=0,yesterday=0,total=data.length;
 
-let now=new Date();
-let yest=new Date(); yest.setDate(now.getDate()-1);
+fetch(API_URL)
+.then(res=>res.text())
+.then(text=>{
 
-let t=now.toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
-let y=yest.toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
+  let data = JSON.parse(text);
 
-data.forEach(r=>{
-if(r.date===t) today++;
-if(r.date===y) yesterday++;
-});
+  let today = 0;
+  let yesterday = 0;
+  let total = data.length;
 
-rr_today.innerText=today;
-rr_yesterday.innerText=yesterday;
-rr_total.innerText=total;
+  let now = new Date();
+  let yest = new Date();
+  yest.setDate(now.getDate() - 1);
+
+  // ✅ format: YYYY-MM-DD
+  let todayStr = now.toISOString().split("T")[0];
+  let yestStr = yest.toISOString().split("T")[0];
+
+  data.forEach(r=>{
+
+    if(!r.date) return;
+
+    let rowDate = new Date(r.date).toISOString().split("T")[0];
+
+    if(rowDate === todayStr) today++;
+    if(rowDate === yestStr) yesterday++;
+
+  });
+
+  // ✅ set values
+  document.getElementById("rr_today").innerText = today;
+  document.getElementById("rr_yesterday").innerText = yesterday;
+  document.getElementById("rr_total").innerText = total;
+
+})
+.catch(err=>{
+  console.error(err);
 });
 }
 
