@@ -6,75 +6,80 @@
 <title>Order Lookup</title>
 
 <style>
-body {
-  font-family:'Segoe UI', Arial;
-  margin:0;
-  background:#f4f6fb;
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Segoe UI',Arial;
+  background:linear-gradient(135deg,#0f2f2f,#0b1f1f);
+  color:#fff;
   text-align:center;
 }
 
-.header {
-  background:#2d3e50;
-  color:#fff;
-  padding:20px;
+/* HEADER */
+.header{
+  padding:25px;
   font-size:26px;
   font-weight:bold;
 }
 
-.search-box {
-  margin-top:30px;
+/* SEARCH BOX */
+.search-box{
+  margin-top:20px;
 }
 
-input {
+/* INPUT */
+input{
   padding:12px;
   width:260px;
-  font-size:16px;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-
-button {
-  padding:12px 18px;
-  font-size:15px;
+  border-radius:10px;
   border:none;
-  border-radius:8px;
-  background:#2d3e50;
-  color:white;
+  outline:none;
+}
+
+/* BUTTON (GREEN STYLE) */
+button{
+  background:#2ec48d;
+  color:#0b1f1f;
+  border:none;
+  border-radius:10px;
+  padding:10px 15px;
   cursor:pointer;
+  font-weight:bold;
   margin:5px;
+  transition:0.3s;
 }
 
-button:hover {
-  background:#1b2838;
+button:hover{
+  transform:translateY(-3px);
 }
 
-.clear-btn { background:#e53935; }
-.clear-btn:hover { background:#c62828; }
-
-.back-btn { background:#555; }
-.back-btn:hover { background:#333; }
-
-table {
+/* TABLE */
+table{
   margin:30px auto;
   border-collapse:collapse;
   width:95%;
-  background:#fff;
+  background:#ffffff;
+  color:#000;
+  border-radius:10px;
+  overflow:hidden;
 }
 
-th, td {
+th{
+  background:#2ec48d;
+  color:#0b1f1f;
+}
+
+th,td{
   padding:12px;
   border:1px solid #ddd;
 }
 
-th {
-  background:#2d3e50;
-  color:white;
-}
-
-.total-row {
+/* TOTAL */
+.total-row{
   background:#e8f5e9;
   font-weight:bold;
 }
+
 </style>
 </head>
 
@@ -86,8 +91,8 @@ th {
   <input type="text" id="orderId" placeholder="Enter Order ID">
   <br>
   <button onclick="searchOrder()">Search</button>
-  <button class="clear-btn" onclick="clearTable()">Clear</button>
-  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+  <button onclick="clearTable()">Clear</button>
+  <button onclick="goBack()">Back</button>
 </div>
 
 <table>
@@ -112,70 +117,69 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxnW9V63PUjacF2w-9tVAsa
 /* SEARCH */
 function searchOrder(){
 
-  let id = document.getElementById("orderId").value.trim();
+let id=document.getElementById("orderId").value.trim();
 
-  if(!id){
-    alert("Enter Order ID ❗");
-    return;
-  }
+if(!id){
+alert("Enter Order ID ❗");
+return;
+}
 
-  tableData.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+tableData.innerHTML="<tr><td colspan='4'>Loading...</td></tr>";
 
-  fetch(API_URL + "?type=lookup&order_id=" + encodeURIComponent(id))
-  .then(res => res.json())
-  .then(data => {
+fetch(API_URL+"?type=lookup&order_id="+encodeURIComponent(id))
+.then(res=>res.json())
+.then(data=>{
 
-    let html = "";
-    let totalQty = 0;
+let html="";
+let totalQty=0;
 
-    if(!data || data.length === 0){
-      html = "<tr><td colspan='4'>No Data Found ❌</td></tr>";
-    } else {
+if(!data || data.length===0){
+html="<tr><td colspan='4'>No Data Found ❌</td></tr>";
+}else{
 
-      data.forEach(item => {
+data.forEach(item=>{
 
-        totalQty += Number(item.qty) || 0;
+totalQty+=Number(item.qty)||0;
 
-        html += `<tr>
-          <td>${item.order_id}</td>
-          <td>${item.sku}</td>
-          <td>${item.product}</td>
-          <td>${item.qty}</td>
-        </tr>`;
-      });
+html+=`<tr>
+<td>${item.order_id}</td>
+<td>${item.sku}</td>
+<td>${item.product}</td>
+<td>${item.qty}</td>
+</tr>`;
+});
 
-      // ✅ TOTAL ROW
-      html += `<tr class="total-row">
-        <td colspan="3">Total Qty</td>
-        <td>${totalQty}</td>
-      </tr>`;
-    }
+html+=`<tr class="total-row">
+<td colspan="3">Total Qty</td>
+<td>${totalQty}</td>
+</tr>`;
+}
 
-    tableData.innerHTML = html;
+tableData.innerHTML=html;
 
-  })
-  .catch(()=>{
-    tableData.innerHTML = "<tr><td colspan='4'>Error ❌</td></tr>";
-  });
+})
+.catch(()=>{
+tableData.innerHTML="<tr><td colspan='4'>Error ❌</td></tr>";
+});
 
 }
 
 /* CLEAR */
 function clearTable(){
-  orderId.value="";
-  tableData.innerHTML = "<tr><td colspan='4'>Enter Order ID to search</td></tr>";
+orderId.value="";
+tableData.innerHTML="<tr><td colspan='4'>Enter Order ID to search</td></tr>";
 }
 
 /* ENTER */
-orderId.addEventListener("keypress", function(e){
-  if(e.key === "Enter"){
-    searchOrder();
-  }
+orderId.addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+searchOrder();
+}
 });
 
 /* BACK */
 function goBack(){
-  window.location.href = "index.html";
+window.location.href="index.html";
 }
 
 </script>
