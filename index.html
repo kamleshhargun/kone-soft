@@ -243,6 +243,32 @@ const API_URL="https://script.google.com/macros/s/AKfycbxnW9V63PUjacF2w-9tVAsaOb
 
 function openPage(p){ location.href=p; }
 
+/* DASHBOARD */
+function loadDashboard(){
+
+fetch(API_URL+"?type=stats")
+.then(res=>res.json())
+.then(d=>{
+
+  // ✅ Pickup
+  document.getElementById("pickup_today").innerText = d.todayPickup || 0;
+  document.getElementById("pickup_yesterday").innerText = d.yesterdayPickup || 0;
+  document.getElementById("pickup_total").innerText = d.totalPickup || 0;
+
+  // ✅ Return
+  document.getElementById("return_today").innerText = d.todayReturn || 0;
+  document.getElementById("return_yesterday").innerText = d.yesterdayReturn || 0;
+  document.getElementById("return_total").innerText = d.totalReturn || 0;
+
+  // ✅ Announcement
+  document.getElementById("announcementText").innerText =
+  `🚚 Pickup → Today: ${d.todayPickup} | Yesterday: ${d.yesterdayPickup} | Total: ${d.totalPickup}   🔁 Return → Today: ${d.todayReturn} | Yesterday: ${d.yesterdayReturn} | Total: ${d.totalReturn}`;
+
+})
+.catch(err=>{
+  console.error("Dashboard Error:", err);
+});
+}
 /* ORDER LOOKUP */
 function loadOrderLookup(){
 fetch(API_URL)
