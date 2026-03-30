@@ -5,206 +5,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KONE-SOFT</title>
 
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png">
+<link rel="icon" href="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png">
 
 <style>
-body {
-  font-family:'Segoe UI', Arial;
-  margin:0;
-  background:#eef2f7;
-  text-align:center;
-  transition:0.3s;
-}
-.dark { background:#0f172a; color:#fff; }
+body {font-family:'Segoe UI';margin:0;background:#eef2f7;text-align:center;transition:0.3s;}
+.dark {background:#0f172a;color:#fff;}
 
-/* HEADER */
 .header {
-  background:linear-gradient(90deg,#2d3e50,#4f46e5);
-  color:#fff;
-  height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+background:linear-gradient(90deg,#2d3e50,#4f46e5);
+color:#fff;height:70px;display:flex;align-items:center;justify-content:center;
+position:relative;box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
-.header span { font-size:26px; font-weight:bold; letter-spacing:1px; }
-.logo { position:absolute; left:15px; width:110px; cursor:pointer; }
+.logo {position:absolute;left:15px;width:110px;cursor:pointer;}
+.header span {font-size:24px;font-weight:bold;}
 
-/* ANNOUNCEMENT */
-.announcement-bar {
-  width:100%;
-  background:#111827;
-  color:#fff;
-  padding:8px 0;
-  overflow:hidden;
-}
-.announcement-text {
-  display:inline-block;
-  white-space:nowrap;
-  animation: scrollText 18s linear infinite;
-  font-size:14px;
-}
-@keyframes scrollText {
-  0% { transform:translateX(100%); }
-  100% { transform:translateX(-100%); }
-}
+.announcement-bar {background:#111827;color:#fff;padding:8px;}
+.announcement-text {white-space:nowrap;animation:scroll 15s linear infinite;}
+@keyframes scroll {0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
 
-/* DASHBOARD */
-.dashboard {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:25px;
-  padding:25px;
-}
+.dashboard {display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
 
 .card {
-  width:260px;
-  min-height:260px;
-  background:#fff;
-  border-radius:18px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
-  padding:18px;
-  cursor:pointer;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  transition:0.3s;
+width:260px;background:#fff;border-radius:15px;padding:15px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);cursor:pointer;transition:0.3s;
 }
+.card:hover {transform:translateY(-5px);}
+.dark .card {background:#1e293b;}
 
-.card:hover {
-  transform:translateY(-6px);
-  box-shadow:0 12px 25px rgba(0,0,0,0.15);
-}
+.stat {background:#f1f5f9;padding:8px;border-radius:8px;margin-top:8px;}
+.dark .stat {background:#334155;}
+.stat span {display:block;font-size:20px;font-weight:bold;}
 
-.dark .card { background:#1e293b; }
+.today {border-left:5px solid #22c55e;}
+.yesterday {border-left:5px solid #f59e0b;}
+.total {border-left:5px solid #3b82f6;}
 
-.card h3 {
-  margin:0;
-  font-size:20px;
-  color:#4f46e5;
-}
-
-.stats { display:flex; flex-direction:column; gap:12px; }
-
-.stat {
-  background:#f1f5f9;
-  padding:10px;
-  border-radius:10px;
-  font-size:14px;
-}
-.dark .stat { background:#334155; }
-
-.stat span {
-  display:block;
-  font-weight:bold;
-  font-size:20px;
-  margin-top:5px;
-}
-
-.today { border-left:5px solid #22c55e; }
-.yesterday { border-left:5px solid #f59e0b; }
-.total { border-left:5px solid #3b82f6; }
-
-/* SETTINGS */
 .setting-btn {
-  background:#4f46e5;
-  color:white;
-  padding:10px;
-  margin-top:8px;
-  border-radius:8px;
-  cursor:pointer;
+background:#4f46e5;color:#fff;padding:8px;margin-top:8px;border-radius:6px;cursor:pointer;
 }
+
+.datetime-box {background:#111827;color:#fff;padding:8px;border-radius:8px;margin-top:10px;}
 
 /* CALCULATOR */
 .calc-container {
-  display:none;
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  width:260px;
-  background:#1e293b;
-  border-radius:15px;
-  padding:15px;
+display:none;position:fixed;bottom:20px;right:20px;width:260px;
+background:#1e293b;border-radius:15px;padding:10px;
 }
-.calc-display {
-  width:100%;
-  height:50px;
-  margin-bottom:10px;
-  text-align:right;
-  font-size:20px;
-}
-.calc-buttons {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-}
-.calc-buttons button {
-  padding:10px;
-}
+.calc-display {width:100%;height:40px;margin-bottom:10px;text-align:right;font-size:18px;}
+.calc-buttons {display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.calc-buttons button {padding:10px;font-size:16px;}
 
-/* DATE TIME */
-.datetime-box {
-  background:#111827;
-  color:#fff;
-  padding:10px;
-  border-radius:10px;
-  font-size:14px;
-}
-
-/* MOBILE */
-@media(max-width:700px){
-  .card { width:90%; }
-}
+@media(max-width:700px){.card{width:90%;}}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo" onclick="location.reload()">
-  <span>Harsidhi Ventures</span>
+<img src="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png" class="logo" onclick="location.reload()">
+<span>Harsidhi Ventures</span>
 </div>
 
 <div class="announcement-bar">
-  <div class="announcement-text" id="announcementText">Loading...</div>
+<div class="announcement-text" id="announcementText">Loading...</div>
 </div>
 
 <div class="dashboard">
 
 <div class="card" onclick="openPage('pickup.html')">
 <h3>🚚 Pickup</h3>
-<div class="stats">
 <div class="stat today">Today <span id="pickup_today">0</span></div>
 <div class="stat yesterday">Yesterday <span id="pickup_yesterday">0</span></div>
 <div class="stat total">Total <span id="pickup_total">0</span></div>
 </div>
-</div>
 
 <div class="card" onclick="openPage('return.html')">
 <h3>🔁 Return</h3>
-<div class="stats">
 <div class="stat today">Today <span id="return_today">0</span></div>
 <div class="stat yesterday">Yesterday <span id="return_yesterday">0</span></div>
 <div class="stat total">Total <span id="return_total">0</span></div>
 </div>
-</div>
 
 <div class="card" onclick="openPage('lookup.html')">
 <h3>🔍 Order Lookup</h3>
-<div class="stats">
 <div class="stat total">Orders <span id="lookup_total">0</span></div>
-</div>
 </div>
 
 <div class="card" onclick="openPage('return-request.html')">
 <h3>📦 Return Request</h3>
-<div class="stats">
 <div class="stat today">Today <span id="rr_today">0</span></div>
 <div class="stat yesterday">Yesterday <span id="rr_yesterday">0</span></div>
 <div class="stat total">Total <span id="rr_total">0</span></div>
-</div>
 </div>
 
 <div class="card">
@@ -212,10 +103,34 @@ body {
 <div class="setting-btn" onclick="toggleCalc()">Calculator</div>
 <div class="setting-btn" onclick="toggleMode()" id="modeBtn">Dark Mode</div>
 <div class="datetime-box" id="dateTime"></div>
-<div class="setting-btn" onclick="exportCSV()">Export Data</div>
-<div class="setting-btn" onclick="funny()" id="funBtn">Tik</div>
 </div>
 
+</div>
+
+<!-- CALCULATOR -->
+<div class="calc-container" id="calcBox">
+<input class="calc-display" id="calcDisplay" readonly>
+<div class="calc-buttons">
+<button onclick="calc('7')">7</button>
+<button onclick="calc('8')">8</button>
+<button onclick="calc('9')">9</button>
+<button onclick="calc('/')">/</button>
+
+<button onclick="calc('4')">4</button>
+<button onclick="calc('5')">5</button>
+<button onclick="calc('6')">6</button>
+<button onclick="calc('*')">*</button>
+
+<button onclick="calc('1')">1</button>
+<button onclick="calc('2')">2</button>
+<button onclick="calc('3')">3</button>
+<button onclick="calc('-')">-</button>
+
+<button onclick="calc('0')">0</button>
+<button onclick="calc('.')">.</button>
+<button onclick="calculate()">=</button>
+<button onclick="calc('+')">+</button>
+</div>
 </div>
 
 <script>
@@ -224,44 +139,38 @@ const API_URL="https://script.google.com/macros/s/AKfycbxnW9V63PUjacF2w-9tVAsaOb
 
 function openPage(p){ location.href=p; }
 
-/* DASHBOARD */
+// DASHBOARD
 function loadDashboard(){
 fetch(API_URL+"?type=stats")
 .then(res=>res.json())
 .then(d=>{
-pickup_today.innerText = d.todayPickup || 0;
-pickup_yesterday.innerText = d.yesterdayPickup || 0;
-pickup_total.innerText = d.totalPickup || 0;
+pickup_today.innerText=d.todayPickup||0;
+pickup_yesterday.innerText=d.yesterdayPickup||0;
+pickup_total.innerText=d.totalPickup||0;
 
-return_today.innerText = d.todayReturn || 0;
-return_yesterday.innerText = d.yesterdayReturn || 0;
-return_total.innerText = d.totalReturn || 0;
+return_today.innerText=d.todayReturn||0;
+return_yesterday.innerText=d.yesterdayReturn||0;
+return_total.innerText=d.totalReturn||0;
 
-announcementText.innerText =
-`🚚 Pickup → ${d.todayPickup} | ${d.yesterdayPickup} | ${d.totalPickup}   🔁 Return → ${d.todayReturn} | ${d.yesterdayReturn} | ${d.totalReturn}`;
+announcementText.innerText=
+`🚚 Pickup: ${d.todayPickup} | ${d.yesterdayPickup} | ${d.totalPickup} 🔁 Return: ${d.todayReturn} | ${d.yesterdayReturn} | ${d.totalReturn}`;
 })
-.catch(err=>{
-console.error(err);
-announcementText.innerText="❌ API Error";
-});
+.catch(()=>announcementText.innerText="❌ API Error");
 }
 
-/* ORDER LOOKUP */
+// LOOKUP
 function loadOrderLookup(){
-fetch(API_URL + "?type=lookup")
+fetch(API_URL+"?type=lookup")
 .then(res=>res.json())
-.then(data=>{
-lookup_total.innerText = data.length || 0;
-});
+.then(d=>lookup_total.innerText=d.length||0);
 }
 
-/* RETURN REQUEST */
+// RETURN REQUEST
 function loadReturnRequest(){
-fetch(API_URL + "?type=exchange")
+fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
 .then(data=>{
-
-let today=0,yesterday=0,total=data.length;
+let today=0,yesterday=0;
 let now=new Date();
 let yest=new Date(); yest.setDate(now.getDate()-1);
 
@@ -276,30 +185,41 @@ if(d===t2) yesterday++;
 
 rr_today.innerText=today;
 rr_yesterday.innerText=yesterday;
-rr_total.innerText=total;
+rr_total.innerText=data.length;
 });
 }
 
-/* INIT */
+// INIT
+function loadAll(){
 loadDashboard();
 loadOrderLookup();
 loadReturnRequest();
+}
+loadAll();
 
-/* TIME */
+// AUTO REFRESH
+setInterval(loadAll,5000);
+
+// TIME
 setInterval(()=>{
-dateTime.innerHTML =
+dateTime.innerHTML=
 `📅 ${new Date().toLocaleDateString("en-IN")} <br> ⏰ ${new Date().toLocaleTimeString("en-IN")}`;
 },1000);
 
-/* EXTRA */
+// DARK MODE
 function toggleMode(){
 document.body.classList.toggle("dark");
-modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
+modeBtn.innerText=document.body.classList.contains("dark")?"Light":"Dark";
 }
-function toggleCalc(){}
-function exportCSV(){}
-function funny(){
-funBtn.innerText = funBtn.innerText==="Tik"?"Tok":"Tik";
+
+// CALCULATOR
+function toggleCalc(){
+calcBox.style.display=calcBox.style.display==="block"?"none":"block";
+}
+function calc(v){ calcDisplay.value+=v; }
+function calculate(){
+try{ calcDisplay.value=eval(calcDisplay.value); }
+catch{ calcDisplay.value="Error"; }
 }
 
 </script>
