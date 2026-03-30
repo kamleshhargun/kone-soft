@@ -59,7 +59,6 @@ body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:c
   transform:translate(-50%,-50%);
   background:#fff; padding:20px; border-radius:10px;
 }
-
 .dark .popup { background:#1e293b; }
 
 </style>
@@ -102,7 +101,7 @@ body { font-family:'Segoe UI', Arial; margin:0; background:#f4f6fb; text-align:c
 </div>
 </div>
 
-<!-- ✅ RETURN REQUEST FIXED -->
+<!-- RETURN REQUEST -->
 <div class="card" onclick="openPage('return-request.html')">
 <h3>Return Request</h3>
 <div class="stats">
@@ -139,90 +138,86 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwcGDOif5DlXDKRuxtsSFV1
 
 function openPage(p){ location.href=p; }
 
-/* ================= LOAD MAIN STATS ================= */
+/* ================= DASHBOARD ================= */
 function loadDashboard(){
 fetch(API_URL+"?type=stats")
 .then(res=>res.json())
 .then(d=>{
 
-pickup_today.innerText=d.todayPickup;
-pickup_yesterday.innerText=d.yesterdayPickup;
-pickup_total.innerText=d.totalPickup;
+pickup_today.innerText=d.todayPickup||0;
+pickup_yesterday.innerText=d.yesterdayPickup||0;
+pickup_total.innerText=d.totalPickup||0;
 
-return_today.innerText=d.todayReturn;
-return_yesterday.innerText=d.yesterdayReturn;
-return_total.innerText=d.totalReturn;
+return_today.innerText=d.todayReturn||0;
+return_yesterday.innerText=d.yesterdayReturn||0;
+return_total.innerText=d.totalReturn||0;
 
-let total=d.totalPickup+d.totalReturn;
-lookup_total.innerText=total;
+// lookup = total orders (optional)
+lookup_total.innerText=(d.totalPickup||0)+(d.totalReturn||0);
 
-});
+})
+.catch(err=>console.log("Stats Error:",err));
 }
 
-/* ================= RETURN REQUEST COUNT ================= */
+/* ================= RETURN REQUEST ================= */
 function loadReturnRequest(){
 
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
 .then(data=>{
 
-let today=0;
-let yesterday=0;
-let total=data.length;
+let today=0,yesterday=0,total=data.length;
 
-// ✅ India timezone fix
-function getLocalDateStr(d){
-return d.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); 
-// format: yyyy-MM-dd
+// India timezone fix
+function getDate(d){
+return d.toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
 }
 
-let now = new Date();
-let yest = new Date();
-yest.setDate(now.getDate()-1);
+let now=new Date();
+let yest=new Date(); yest.setDate(now.getDate()-1);
 
-let todayStr = getLocalDateStr(now);
-let yestStr = getLocalDateStr(yest);
+let t1=getDate(now);
+let t2=getDate(yest);
 
 data.forEach(r=>{
-
-let rowDate = (r.date || "").trim();
-
-if(rowDate === todayStr) today++;
-if(rowDate === yestStr) yesterday++;
-
+let d=(r.date||"").trim();
+if(d===t1) today++;
+if(d===t2) yesterday++;
 });
 
-rr_today.innerText = today;
-rr_yesterday.innerText = yesterday;
-rr_total.innerText = total;
+rr_today.innerText=today;
+rr_yesterday.innerText=yesterday;
+rr_total.innerText=total;
 
 })
-.catch(err=>{
-console.log("Return Count Error:", err);
-});
-
+.catch(err=>console.log("Return Error:",err));
 }
 
+/* ================= AUTO LOAD ================= */
+function loadAll(){
 loadDashboard();
 loadReturnRequest();
+}
+loadAll();
+setInterval(loadAll,5000); // auto refresh
 
-/* CALC */
+/* ================= CALC ================= */
 function openCalc(){ calcBox.style.display="block"; }
 window.onclick=e=>{ if(e.target==calcBox) calcBox.style.display="none"; }
-function calculate(){ calcInput.value=eval(calcInput.value); }
+function calculate(){ try{ calcInput.value=eval(calcInput.value);}catch{calcInput.value="Error";} }
 
-/* DARK MODE */
+/* ================= DARK ================= */
 function toggleMode(){
 document.body.classList.toggle("dark");
 modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
 }
 
-/* TIME */
+/* ================= TIME ================= */
 setInterval(()=>{
 dateTime.innerText=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"});
 },1000);
 
-/* EXPORT */
+/* ================= EXPORT ================= */
 function exportCSV(){
 fetch(API_URL+"?type=exchange")
 .then(res=>res.json())
@@ -237,7 +232,7 @@ a.click();
 });
 }
 
-/* FUN */
+/* ================= FUN ================= */
 function funny(){
 funBtn.innerText = funBtn.innerText==="Tik" ? "Tok" : "Tik";
 }
