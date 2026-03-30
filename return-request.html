@@ -142,18 +142,25 @@ function loadData(){
 
   showStatus("🔄 Loading data...", "#2196F3");
 
-  fetch(API_URL)
-  .then(res=>res.json())
-  .then(data=>{
+  fetch(API_URL, {
+    method: "GET",
+    mode: "cors"
+  })
+  .then(response => response.text()) // 👈 IMPORTANT CHANGE
+  .then(text => {
 
-    console.log("API DATA:", data);
+    console.log("RAW:", text);
+
+    let data;
+
+    try {
+      data = JSON.parse(text); // 👈 manually parse
+    } catch(e){
+      throw new Error("JSON Parse Error");
+    }
 
     if(!data || data.length === 0){
       showStatus("⚠️ No Data Found", "#ff9800");
-
-      fullData = [];
-      filteredData = [];
-      renderTable();
       return;
     }
 
@@ -168,11 +175,10 @@ function loadData(){
   })
   .catch(err=>{
     console.error(err);
-    showStatus("❌ API Error", "#f44336");
+    showStatus("❌ " + err.message, "#f44336");
   });
 
 }
-
 /* TABLE */
 function renderTable(){
 
