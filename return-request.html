@@ -129,7 +129,7 @@ function renderTable(){
   tbody.innerHTML = "";
 
   let start = (currentPage - 1) * rowsPerPage;
-
+  let end = end + rowsPerPage;
 
   // ✅ FIX: use filteredData
   let pageData = filteredData.slice(start, end);
