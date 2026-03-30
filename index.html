@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KONE-SOFT</title>
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png">
+
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/kamleshhargun/kone-soft/main/logo.png">
+
 <style>
 body {
   font-family:'Segoe UI', Arial;
@@ -57,7 +59,6 @@ body {
   padding:25px;
 }
 
-/* CARD */
 .card {
   width:260px;
   min-height:260px;
@@ -70,24 +71,21 @@ body {
   flex-direction:column;
   justify-content:space-between;
   transition:0.3s;
-  position:relative;
 }
 
 .card:hover {
-  transform:translateY(-6px) scale(1.02);
+  transform:translateY(-6px);
   box-shadow:0 12px 25px rgba(0,0,0,0.15);
 }
 
 .dark .card { background:#1e293b; }
 
-/* CARD TITLE */
 .card h3 {
   margin:0;
   font-size:20px;
   color:#4f46e5;
 }
 
-/* STATS */
 .stats { display:flex; flex-direction:column; gap:12px; }
 
 .stat {
@@ -95,10 +93,7 @@ body {
   padding:10px;
   border-radius:10px;
   font-size:14px;
-  transition:0.2s;
 }
-.stat:hover { transform:scale(1.02); }
-
 .dark .stat { background:#334155; }
 
 .stat span {
@@ -108,7 +103,6 @@ body {
   margin-top:5px;
 }
 
-/* COLORS */
 .today { border-left:5px solid #22c55e; }
 .yesterday { border-left:5px solid #f59e0b; }
 .total { border-left:5px solid #3b82f6; }
@@ -121,9 +115,7 @@ body {
   margin-top:8px;
   border-radius:8px;
   cursor:pointer;
-  transition:0.2s;
 }
-.setting-btn:hover { background:#4338ca; }
 
 /* CALCULATOR */
 .calc-container {
@@ -135,7 +127,6 @@ body {
   background:#1e293b;
   border-radius:15px;
   padding:15px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.4);
 }
 .calc-display {
   width:100%;
@@ -151,9 +142,6 @@ body {
 }
 .calc-buttons button {
   padding:10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
 }
 
 /* DATE TIME */
@@ -166,7 +154,7 @@ body {
 }
 
 /* MOBILE */
-@media(max-width:600px){
+@media(max-width:700px){
   .card { width:90%; }
 }
 </style>
@@ -185,7 +173,6 @@ body {
 
 <div class="dashboard">
 
-<!-- PICKUP -->
 <div class="card" onclick="openPage('pickup.html')">
 <h3>🚚 Pickup</h3>
 <div class="stats">
@@ -195,7 +182,6 @@ body {
 </div>
 </div>
 
-<!-- RETURN -->
 <div class="card" onclick="openPage('return.html')">
 <h3>🔁 Return</h3>
 <div class="stats">
@@ -205,7 +191,6 @@ body {
 </div>
 </div>
 
-<!-- LOOKUP -->
 <div class="card" onclick="openPage('lookup.html')">
 <h3>🔍 Order Lookup</h3>
 <div class="stats">
@@ -213,7 +198,6 @@ body {
 </div>
 </div>
 
-<!-- RETURN REQUEST -->
 <div class="card" onclick="openPage('return-request.html')">
 <h3>📦 Return Request</h3>
 <div class="stats">
@@ -223,16 +207,13 @@ body {
 </div>
 </div>
 
-<!-- SETTINGS -->
 <div class="card">
 <h3>⚙️ Settings</h3>
-
 <div class="setting-btn" onclick="toggleCalc()">Calculator</div>
 <div class="setting-btn" onclick="toggleMode()" id="modeBtn">Dark Mode</div>
 <div class="datetime-box" id="dateTime"></div>
 <div class="setting-btn" onclick="exportCSV()">Export Data</div>
 <div class="setting-btn" onclick="funny()" id="funBtn">Tik</div>
-
 </div>
 
 </div>
@@ -245,37 +226,33 @@ function openPage(p){ location.href=p; }
 
 /* DASHBOARD */
 function loadDashboard(){
-
 fetch(API_URL+"?type=stats")
 .then(res=>res.json())
 .then(d=>{
+pickup_today.innerText = d.todayPickup || 0;
+pickup_yesterday.innerText = d.yesterdayPickup || 0;
+pickup_total.innerText = d.totalPickup || 0;
 
-  // ✅ Pickup
-  document.getElementById("pickup_today").innerText = d.todayPickup || 0;
-  document.getElementById("pickup_yesterday").innerText = d.yesterdayPickup || 0;
-  document.getElementById("pickup_total").innerText = d.totalPickup || 0;
+return_today.innerText = d.todayReturn || 0;
+return_yesterday.innerText = d.yesterdayReturn || 0;
+return_total.innerText = d.totalReturn || 0;
 
-  // ✅ Return
-  document.getElementById("return_today").innerText = d.todayReturn || 0;
-  document.getElementById("return_yesterday").innerText = d.yesterdayReturn || 0;
-  document.getElementById("return_total").innerText = d.totalReturn || 0;
-
-  // ✅ Announcement
-  document.getElementById("announcementText").innerText =
-  `🚚 Pickup → Today: ${d.todayPickup} | Yesterday: ${d.yesterdayPickup} | Total: ${d.totalPickup}   🔁 Return → Today: ${d.todayReturn} | Yesterday: ${d.yesterdayReturn} | Total: ${d.totalReturn}`;
-
+announcementText.innerText =
+`🚚 Pickup → ${d.todayPickup} | ${d.yesterdayPickup} | ${d.totalPickup}   🔁 Return → ${d.todayReturn} | ${d.yesterdayReturn} | ${d.totalReturn}`;
 })
 .catch(err=>{
-  console.error("Dashboard Error:", err);
+console.error(err);
+announcementText.innerText="❌ API Error";
 });
 }
+
 /* ORDER LOOKUP */
 function loadOrderLookup(){
 fetch(API_URL)
 .then(res=>res.text())
-.then(text=>{
-  let data = JSON.parse(text);
-  document.getElementById("lookup_total").innerText = data.length;
+.then(t=>{
+let data=JSON.parse(t);
+lookup_total.innerText=data.length;
 });
 }
 
@@ -283,41 +260,49 @@ fetch(API_URL)
 function loadReturnRequest(){
 fetch(API_URL)
 .then(res=>res.text())
-.then(text=>{
-  let data = JSON.parse(text);
+.then(t=>{
+let data=JSON.parse(t);
 
-  let today=0,yesterday=0,total=data.length;
-  let now=new Date();
-  let yest=new Date(); yest.setDate(now.getDate()-1);
+let today=0,yesterday=0,total=data.length;
+let now=new Date();
+let yest=new Date(); yest.setDate(now.getDate()-1);
 
-  let t=now.toISOString().split("T")[0];
-  let y=yest.toISOString().split("T")[0];
+let t1=now.toISOString().split("T")[0];
+let t2=yest.toISOString().split("T")[0];
 
-  data.forEach(r=>{
-    let d=new Date(r.date).toISOString().split("T")[0];
-    if(d===t) today++;
-    if(d===y) yesterday++;
-  });
+data.forEach(r=>{
+let d=new Date(r.date).toISOString().split("T")[0];
+if(d===t1) today++;
+if(d===t2) yesterday++;
+});
 
-  rr_today.innerText=today;
-  rr_yesterday.innerText=yesterday;
-  rr_total.innerText=total;
-
-  announcementText.innerText =
-  `📦 Return Request → Today: ${today} | Yesterday: ${yesterday} | Total: ${total}`;
+rr_today.innerText=today;
+rr_yesterday.innerText=yesterday;
+rr_total.innerText=total;
 });
 }
 
+/* INIT */
 loadDashboard();
 loadOrderLookup();
 loadReturnRequest();
-
 
 /* TIME */
 setInterval(()=>{
 dateTime.innerHTML =
 `📅 ${new Date().toLocaleDateString("en-IN")} <br> ⏰ ${new Date().toLocaleTimeString("en-IN")}`;
 },1000);
+
+/* EXTRA */
+function toggleMode(){
+document.body.classList.toggle("dark");
+modeBtn.innerText=document.body.classList.contains("dark")?"Light Mode":"Dark Mode";
+}
+function toggleCalc(){}
+function exportCSV(){}
+function funny(){
+funBtn.innerText = funBtn.innerText==="Tik"?"Tok":"Tik";
+}
 
 </script>
 
